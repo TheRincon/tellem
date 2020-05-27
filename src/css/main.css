@@ -1,0 +1,46 @@
+html,
+body {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+#map {
+  height: 100%;
+  width: 80%;
+}
+
+table td+td {
+  border-left: 2px solid red;
+}
+
+/* Probably the wrong way to do this, but I want to expand the container horiz. when items are present. */
+#container_one {
+  border: 3px solid #f00;
+  border-radius: 20%;
+  height: 50px;
+  width: 50px;
+}
+
+/* Each pair of items in the container has 5px in between as a buffer. */
+#container_two {
+  border: 3px solid #f00;
+  border-radius: 20%;
+  height: 50px;
+  width: 105px;
+}
+
+#container_three {
+  border: 3px solid #f00;
+  border-radius: 20%;
+  height: 50px;
+  width: 160px;
+}
+
+#container_four {
+  border: 3px solid #f00;
+  border-radius: 20%;
+  height: 50px;
+  width: 215px;
+}
