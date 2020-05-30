@@ -1,4 +1,4 @@
-// import createHTMLMapMarker from "./html-map-marker.js";
+
 
 var map = new google.maps.Map(document.getElementById('map'), {
   zoom: 8,
@@ -9,13 +9,18 @@ var map = new google.maps.Map(document.getElementById('map'), {
   mapTypeId: google.maps.MapTypeId.TERRAIN
 });
 
-var centerControlDiv = document.createElement('div');
-var centerControl = new CenterControl(centerControlDiv, map);
-
-centerControlDiv.index = 1;
-map.controls[google.maps.ControlPosition.TOP_CENTER].push(centerControlDiv);
+var startTripDiv = document.createElement('div');
+var endTripDiv = document.createElement('div');
+var startTrip = new TripControl(startTripDiv, map, 'Start Trip');
+var endTrip = new TripControl(startTripDiv, map, 'End Trip');
+startTripDiv.index = 1;
+endTripDiv.index = 2;
+map.controls[google.maps.ControlPosition.TOP_CENTER].push(startTripDiv);
+map.controls[google.maps.ControlPosition.TOP_CENTER].push(endTripDiv);
 
 var marker_list = {}
+
+var started = false
 
 var delete_marker = function(uuid) {
   var delete_candidate = marker_list[uuid];
@@ -68,11 +73,22 @@ function uuidv4() {
 
 function placeMarker(position, map) {
   var marker_uuid = uuidv4();
-  marker = new google.maps.Marker({
+  marker = new RichMarker({
     position: position,
     map: map,
     id: marker_uuid,
-    clicked: false
+    clicked: false,
+    content: '<style>' +
+             '.triangle-down {' +
+ 	           'width: 0;' +
+	           'height: 0;' +
+	           'border-left: 10px solid transparent;' +
+	           'border-right: 10px solid transparent;' +
+	           'border-top: 20px solid #004225;}' +
+             '</style>' +
+             '<div class="triangle-down"></div>',
+    // icon: SpikeIcon(),
+    spike_type: SpikeType()
   });
   map.panTo(position);
   marker_list[marker_uuid] = marker;
@@ -83,7 +99,23 @@ function placeMarker(position, map) {
   // google.maps.event.addListener(marker, "rightclick", function (point) { id = this.uuid; delete_marker(id) });
 }
 
-function CenterControl(controlDiv, map) {
+function SpikeType() {
+  if (started == true) {
+    return 'start_spike'
+  } else {
+    return 'normal_spike'
+  }
+}
+
+function SpikeIcon() {
+  if (started == false) {
+    return ''
+  } else {
+    return 'http://maps.google.com/mapfiles/ms/icons/green-dot.png'
+  }
+}
+
+function TripControl(tripDiv, map, inner_html) {
 
   // Set CSS for the control border.
   var controlUI = document.createElement('div');
@@ -96,7 +128,7 @@ function CenterControl(controlDiv, map) {
   controlUI.style.marginTop = '10px';
   controlUI.style.textAlign = 'center';
   controlUI.title = 'Click to recenter the map';
-  controlDiv.appendChild(controlUI);
+  tripDiv.appendChild(controlUI);
 
   // Set CSS for the control interior.
   var controlText = document.createElement('div');
@@ -106,12 +138,15 @@ function CenterControl(controlDiv, map) {
   controlText.style.lineHeight = '38px';
   controlText.style.paddingLeft = '5px';
   controlText.style.paddingRight = '5px';
-  controlText.innerHTML = 'Pick Trip Center';
+  controlText.innerHTML = inner_html;
   controlUI.appendChild(controlText);
 
-  // Setup the click event listeners: simply set the map to Chicago.
   controlUI.addEventListener('click', function() {
-    map.panTo({lat: 48.11111, lng: 15.11111});
+    if (started == false) {
+      started = true
+    } else {
+      started = false
+    }
   });
 
 }

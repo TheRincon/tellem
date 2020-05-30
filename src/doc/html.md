@@ -32,17 +32,17 @@ attribute in the `<html>` as in this example:
 
 ### The order of the `<title>` and `<meta>` tags
 
-The charset declaration (`<meta charset="utf-8">`) must be included completely 
+The charset declaration (`<meta charset="utf-8">`) must be included completely
 within the [first 1024 bytes of the document](https://www.whatwg.org/specs/web-apps/current-work/multipage/semantics.html#charset)
 and should be specified as early as possible (before any content that could
-be controlled by an attacker, such as a `<title>` element) in order to avoid a 
+be controlled by an attacker, such as a `<title>` element) in order to avoid a
 potential [encoding-related security issue](https://code.google.com/archive/p/doctype-mirror/wikis/ArticleUtf7.wiki)
 in Internet Explorer
 
 ## Meta Description
 
-The `description` meta tag provides a short description of the page. 
-In some situations this description is used as a part of the snippet 
+The `description` meta tag provides a short description of the page.
+In some situations this description is used as a part of the snippet
 shown in the search results.
 
 ```html
@@ -65,29 +65,29 @@ HTML5 Boilerplate comes with a simple setup that strikes a good balance for gene
 ```
 
 If you want to take advantage of edge-to-edge displays of iPhone X/XS/XR you can do
-so with additional viewport parameters. [Check the WebKit blog](https://webkit.org/blog/7929/designing-websites-for-iphone-x/) 
+so with additional viewport parameters. [Check the WebKit blog](https://webkit.org/blog/7929/designing-websites-for-iphone-x/)
 for details.
 
 ## Web App Manifest
 
-HTML5 Boilerplate includes a simple web app manifest file. 
+HTML5 Boilerplate includes a simple web app manifest file.
 
-The web app manifest is a simple JSON file that allows you to control how your 
+The web app manifest is a simple JSON file that allows you to control how your
 app appears on a device's home screen, what it looks like when it launches
 in that context and what happens when it is launched. This allows for much greater
-control over the UI of a saved site or web app on a mobile device. 
+control over the UI of a saved site or web app on a mobile device.
 
 It's linked to from the HTML as follows:
 
 ```html
         <link rel="manifest" href="site.webmanifest">
 ```
-Our [site.webmanifest](https://github.com/h5bp/html5-boilerplate/blob/master/src/site.webmanifest) contains a very skeletal "app" definition, just to show the basic usage. 
+Our [site.webmanifest](https://github.com/h5bp/html5-boilerplate/blob/master/src/site.webmanifest) contains a very skeletal "app" definition, just to show the basic usage.
 You should fill this file out with [more information about your site or application](https://developer.mozilla.org/en-US/docs/Web/Manifest)
 
 ## Favicons and Touch Icon
 
-The shortcut icons should be put in the root directory of your site. `favicon.ico` 
+The shortcut icons should be put in the root directory of your site. `favicon.ico`
 is automatically picked up by browsers if it's placed in the root.  HTML5
 Boilerplate comes with a default set of icons (include favicon and one Apple
 Touch Icon) that you can use as a baseline to create your own.
@@ -118,7 +118,7 @@ This allows you to target parts of your CSS and JavaScript based on the
 features supported by a browser.
 
 Starting with version 3 Modernizr can be customized using the [modernizr-config.json](https://github.com/h5bp/html5-boilerplate/blob/master/modernizr-config.json) and the
-[Modernizr command line utility](https://www.npmjs.com/package/modernizr-cli). 
+[Modernizr command line utility](https://www.npmjs.com/package/modernizr-cli).
 
 ## What About Polyfills?
 
@@ -130,8 +130,8 @@ just put it before the other scripts in the bottom of the page:
 ```html
     <script src="js/vendor/modernizr-3.6.0.min.js"></script>
     <script src="https://cdn.polyfill.io/v2/polyfill.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
-    <script>window.jQuery || document.write('<script src="js/vendor/jquery-3.3.1.min.js"><\/script>')</script>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+    <script>window.jQuery || document.write('<script src="js/vendor/jquery-3.5.1.min.js"><\/script>')</script>
     <script src="js/plugins.js"></script>
     <script src="js/main.js"></script>
 </body>
@@ -139,8 +139,8 @@ just put it before the other scripts in the bottom of the page:
 
 If you like to just include the polyfills yourself, you could include them in
 `js/plugins.js`. When you have a bunch of polyfills to load in, you could
-also create a `polyfills.js` file in the `js/vendor` directory or include the files 
-individually and combine them using a build tool. Always ensure that the polyfills 
+also create a `polyfills.js` file in the `js/vendor` directory or include the files
+individually and combine them using a build tool. Always ensure that the polyfills
 are all loaded before any other JavaScript.
 
 There are some misconceptions about Modernizr and polyfills. It's important
