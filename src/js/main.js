@@ -1,5 +1,3 @@
-
-
 var map = new google.maps.Map(document.getElementById('map'), {
   zoom: 8,
   center: {
@@ -9,13 +7,109 @@ var map = new google.maps.Map(document.getElementById('map'), {
   mapTypeId: google.maps.MapTypeId.TERRAIN
 });
 
+function placeMarker(position, map, started) {
+  var marker_uuid = uuidv4();
+  spike_color = SpikeColor(started);
+  var marker = new RichMarker({
+    position: position,
+    map: map,
+    id: marker_uuid,
+    clicked: false,
+    content: '<style>' +
+             '.triangle-down {' +
+ 	           'width: 0;' +
+	           'height: 0;' +
+	           'border-left: 10px solid transparent;' +
+	           'border-right: 10px solid transparent;' +
+	           `border-top: 20px solid ${spike_color}; }` +
+             '</style>' +
+             '<div class="triangle-down"></div>',
+    spike_type: SpikeType()
+  });
+
+  marker_list[marker_uuid] = marker;
+
+  // var marker = createHTMLMapMarker({
+  //   position: position,
+  //   map: map,
+  //   id: marker_uuid,
+  //   clicked: false,
+  //   map: map,
+  //   spike_color: SpikeColor(),
+  //   html: '<style>' +
+  //            '.triangle-down {' +
+ 	//            'width: 0;' +
+	//            'height: 0;' +
+	//            'border-left: 10px solid transparent;' +
+	//            'border-right: 10px solid transparent;' +
+	//            `border-top: 20px solid ${spike_color}; }` +
+  //            '</style>' +
+  //            '<div class="triangle-down"></div>'
+  // });
+
+  // marker.addListener('click', function() {
+  //   if (this.clicked == false) {
+  //     this.setContent('<style>' +
+  //              '.triangle-down {' +
+  //              'width: 0;' +
+  //              'height: 0;' +
+  //              'border-left: 10px solid transparent;' +
+  //              'border-right: 10px solid transparent;' +
+  //              'border-top: 20px solid #555500}' +
+  //              '</style>' +
+  //              '<div class="triangle-down"></div>')
+  //     this.clicked = true
+  //   } else {
+  //     this.setContent('<style>' +
+  //              '.triangle-down {' +
+  //              'width: 0;' +
+  //              'height: 0;' +
+  //              'border-left: 10px solid transparent;' +
+  //              'border-right: 10px solid transparent;' +
+  //              'border-top: 20px solid #ff0000}' +
+  //              '</style>' +
+  //              '<div class="triangle-down"></div>')
+  //     this.clicked = false
+  //   }
+  // });
+
+  // google.maps.event.addListener(marker, "click", function(e) {
+  //   e.stopPropagation();
+  //   if (this.clicked == false) {
+  //     this.setContent('<style>' +
+  //              '.triangle-down {' +
+  //              'width: 0;' +
+  //              'height: 0;' +
+  //              'border-left: 10px solid transparent;' +
+  //              'border-right: 10px solid transparent;' +
+  //              'border-top: 20px solid #555500}' +
+  //              '</style>' +
+  //              '<div class="triangle-down"></div>')
+  //     this.clicked = true
+  //   } else {
+  //     this.setContent('<style>' +
+  //              '.triangle-down {' +
+  //              'width: 0;' +
+  //              'height: 0;' +
+  //              'border-left: 10px solid transparent;' +
+  //              'border-right: 10px solid transparent;' +
+  //              'border-top: 20px solid #ff0000}' +
+  //              '</style>' +
+  //              '<div class="triangle-down"></div>')
+  //     this.clicked = false
+  //   }
+  // });
+  map.panTo(position);
+}
+
+
 var startTripDiv = document.createElement('div');
 var endTripDiv = document.createElement('div');
-var startTrip = new TripControl(startTripDiv, map, 'Start Trip');
-var endTrip = new TripControl(startTripDiv, map, 'End Trip');
+var startTrip = new TripControl(startTripDiv, map, 'Start Trip', '#004225');
+var endTrip = new TripControl(startTripDiv, map, 'End Trip', '#880000');
 startTripDiv.index = 1;
 endTripDiv.index = 2;
-map.controls[google.maps.ControlPosition.TOP_CENTER].push(startTripDiv);
+map.controls[google.maps.ControlPosition.TOP_LEFT].push(startTripDiv);
 map.controls[google.maps.ControlPosition.TOP_CENTER].push(endTripDiv);
 
 var marker_list = {}
@@ -47,16 +141,6 @@ var iw = function() {
   //      })
   // (marker));
 
-  google.maps.event.addListener(marker, 'click', function() {
-    if (this.clicked == false) {
-      this.setIcon('https://www.ruralshores.com/assets/marker-icon.png')
-      this.clicked = true
-    } else {
-      this.setIcon()
-      this.clicked = false
-    }
-  });
-
   // google.maps.event.addListener(marker, 'mouseover', function() {
   //     marker.setIcon('https://www.ruralshores.com/assets/marker-icon.png');
   // });
@@ -65,38 +149,19 @@ var iw = function() {
   //     marker.setIcon();
   // });
 }
+
 function uuidv4() {
   return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
     (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
   );
 }
 
-function placeMarker(position, map) {
-  var marker_uuid = uuidv4();
-  marker = new RichMarker({
-    position: position,
-    map: map,
-    id: marker_uuid,
-    clicked: false,
-    content: '<style>' +
-             '.triangle-down {' +
- 	           'width: 0;' +
-	           'height: 0;' +
-	           'border-left: 10px solid transparent;' +
-	           'border-right: 10px solid transparent;' +
-	           'border-top: 20px solid #004225;}' +
-             '</style>' +
-             '<div class="triangle-down"></div>',
-    // icon: SpikeIcon(),
-    spike_type: SpikeType()
-  });
-  map.panTo(position);
-  marker_list[marker_uuid] = marker;
-  marker.addListener('click', iw(marker_uuid));
-  iw();
-  // marker_list[marker_uuid].addListener('click', infoWindow(marker_uuid));
-  // marker_list[marker_uuid].addListener('hover', infoWindow(marker_uuid));
-  // google.maps.event.addListener(marker, "rightclick", function (point) { id = this.uuid; delete_marker(id) });
+function SpikeColor() {
+  if (started == true) {
+    return '#004225'
+  } else {
+    return '#660000'
+  }
 }
 
 function SpikeType() {
@@ -107,19 +172,11 @@ function SpikeType() {
   }
 }
 
-function SpikeIcon() {
-  if (started == false) {
-    return ''
-  } else {
-    return 'http://maps.google.com/mapfiles/ms/icons/green-dot.png'
-  }
-}
-
-function TripControl(tripDiv, map, inner_html) {
+function TripControl(tripDiv, map, inner_html, color) {
 
   // Set CSS for the control border.
   var controlUI = document.createElement('div');
-  controlUI.style.backgroundColor = '#8B0000';
+  controlUI.style.backgroundColor = color;
   controlUI.style.border = '2px solid #fff';
   controlUI.style.borderRadius = '3px';
   controlUI.style.boxShadow = '0 2px 6px rgba(0,0,0,.3)';
@@ -151,9 +208,7 @@ function TripControl(tripDiv, map, inner_html) {
 
 }
 
-
-
 // This event listener calls addMarker() when the map is clicked.
 google.maps.event.addListener(map, 'click', function(e) {
-  placeMarker(e.latLng, map);
+  placeMarker(e.latLng, map, started);
 });

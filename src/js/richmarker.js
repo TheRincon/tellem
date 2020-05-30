@@ -729,6 +729,7 @@ RichMarker.prototype.onAdd = function() {
 
     var that = this;
     google.maps.event.addDomListener(this.markerContent_, 'click', function(e) {
+      e.stopPropagation();
       google.maps.event.trigger(that, 'click', e);
     });
     google.maps.event.addDomListener(this.markerContent_, 'mouseover', function(e) {
