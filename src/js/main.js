@@ -1,5 +1,3 @@
-var marker_list = {}
-
 var map = new google.maps.Map(document.getElementById('map'), {
   zoom: 8,
   center: {
@@ -18,6 +16,9 @@ function placeMarker(position, map, started) {
     optimized: false,
     id: marker_uuid,
     clicked: false,
+    clickable: true,
+    draggable: false,
+    cursor: 'pointer',
     content: '<style>' +
              '.triangle-down {' +
  	           'width: 0;' +
@@ -30,79 +31,39 @@ function placeMarker(position, map, started) {
     spike_type: SpikeType()
   });
 
-  marker_list[marker_uuid] = marker;
-
-  // var marker = createHTMLMapMarker({
-  //   position: position,
-  //   map: map,
-  //   id: marker_uuid,
-  //   clicked: false,
-  //   map: map,
-  //   spike_color: SpikeColor(),
-  //   html: '<style>' +
-  //            '.triangle-down {' +
- 	//            'width: 0;' +
-	//            'height: 0;' +
-	//            'border-left: 10px solid transparent;' +
-	//            'border-right: 10px solid transparent;' +
-	//            `border-top: 20px solid ${spike_color}; }` +
-  //            '</style>' +
-  //            '<div class="triangle-down"></div>'
-  // });
-
-  // marker.addListener('click', function() {
-  //   if (this.clicked == false) {
-  //     this.setContent('<style>' +
-  //              '.triangle-down {' +
-  //              'width: 0;' +
-  //              'height: 0;' +
-  //              'border-left: 10px solid transparent;' +
-  //              'border-right: 10px solid transparent;' +
-  //              'border-top: 20px solid #555500}' +
-  //              '</style>' +
-  //              '<div class="triangle-down"></div>')
-  //     this.clicked = true
-  //   } else {
-  //     this.setContent('<style>' +
-  //              '.triangle-down {' +
-  //              'width: 0;' +
-  //              'height: 0;' +
-  //              'border-left: 10px solid transparent;' +
-  //              'border-right: 10px solid transparent;' +
-  //              'border-top: 20px solid #ff0000}' +
-  //              '</style>' +
-  //              '<div class="triangle-down"></div>')
-  //     this.clicked = false
-  //   }
-  // });
-
   (function(marker) {
-                 // add click event
+                 // https://css-tricks.com/the-shapes-of-css/
                  google.maps.event.addListener(marker, 'click', function() {
                    if (this.clicked == false) {
                      this.setContent('<style>' +
                      '#talkbubble {' +
                            'width: 80px;' +
                            'height: 80px;' +
-                           'background: #660000;' +
+                           'background: #ffffff;' +
                            'position: relative;' +
-                           'bottom: 20px;' +
+                           'bottom: 15px;' +
                            '-moz-border-radius: 5px;' +
                            '-webkit-border-radius: 5px;' +
+                           'border: thick solid #660000;' +
                            'border-radius: 10px;}' +
                          '#talkbubble:before {' +
                            'content: "";' +
                            'position: absolute;' +
                            'top: 100%;' +
                            'right: 38%;' +
-                           // 'top: 7px;' +
                            'width: 0;' +
                            'height: 0;' +
+                           '-moz-box-shadow: none;' +
+                           '-webkit-box-shadow: none;' +
+                           'box-shadow: none;' +
                            'border-left: 10px solid transparent;' +
                            'border-right: 10px solid transparent;' +
 	                         `border-top: 20px solid #660000; }` +
                               '</style>' +
-                              '<div id="talkbubble"></div>')
+                              '<div id="talkbubble">' +
+                              '<form action="/file-upload" class="dropzone"' +
+                              'id="upload-dropzone"></form>' +
+                              '</div>')
                      this.clicked = true
                    } else {
                      spike_color = SpikeColor(started);
@@ -119,33 +80,6 @@ function placeMarker(position, map, started) {
                    }
                  });
              })(marker);
-
-  // marker.addListener("click", function() {
-  //   // e.stopPropagation();
-  //   if (this.clicked == false) {
-  //     this.setContent('<style>' +
-  //              '.triangle-down {' +
-  //              'width: 0;' +
-  //              'height: 0;' +
-  //              'border-left: 10px solid transparent;' +
-  //              'border-right: 10px solid transparent;' +
-  //              'border-top: 20px solid #555500}' +
-  //              '</style>' +
-  //              '<div class="triangle-down"></div>')
-  //     this.clicked = true
-  //   } else {
-  //     this.setContent('<style>' +
-  //              '.triangle-down {' +
-  //              'width: 0;' +
-  //              'height: 0;' +
-  //              'border-left: 10px solid transparent;' +
-  //              'border-right: 10px solid transparent;' +
-  //              'border-top: 20px solid #ff0000}' +
-  //              '</style>' +
-  //              '<div class="triangle-down"></div>')
-  //     this.clicked = false
-  //   }
-  // });
   map.panTo(position);
 }
 
@@ -165,15 +99,6 @@ var delete_marker = function(uuid) {
   var delete_candidate = marker_list[uuid];
   delete_candidate.setMap(null);
 }
-
-// panTo(LatLng) panTo(position)
-
-// var infoWindow = function(uuid) {
-//   var infowindow = new google.maps.InfoWindow({
-//     content: "<table style=\"width:100%\">\r\n  <tr>\r\n    <td>Ersin<\/td>\r\n    <td>Daniel<\/td> \r\n  <\/tr>\r\n<\/table>"
-//   });
-//   infowindow.open(map, marker_list[uuid]);
-// }
 
 function uuidv4() {
   return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>

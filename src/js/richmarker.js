@@ -28,6 +28,8 @@
  * @extends {google.maps.OverlayView}
  * @constructor
  */
+
+ // THIS FILE IS DEPRECATED BY GOOGLE AND HAS BEEN MODIFIED
 function RichMarker(opt_options) {
   var options = opt_options || {};
 
@@ -435,11 +437,11 @@ RichMarker.prototype.setCursor_ = function(whichCursor) {
     return;
   }
 
-  var cursor = '';
+  var cursor = 'pointer';
   if (navigator.userAgent.indexOf('Gecko/') !== -1) {
     // Moz has some nice cursors :)
     if (whichCursor == 'dragging') {
-      cursor = '-moz-grabbing';
+      cursor = '-moz-pointer';
     }
 
     if (whichCursor == 'dragready') {
