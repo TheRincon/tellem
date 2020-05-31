@@ -1,3 +1,5 @@
+var marker_list = {}
+
 var map = new google.maps.Map(document.getElementById('map'), {
   zoom: 8,
   center: {
@@ -13,6 +15,7 @@ function placeMarker(position, map, started) {
   var marker = new RichMarker({
     position: position,
     map: map,
+    optimized: false,
     id: marker_uuid,
     clicked: false,
     content: '<style>' +
@@ -21,7 +24,7 @@ function placeMarker(position, map, started) {
 	           'height: 0;' +
 	           'border-left: 10px solid transparent;' +
 	           'border-right: 10px solid transparent;' +
-	           `border-top: 20px solid ${spike_color}; }` +
+	           `border-top: 20px solid #660000; }` +
              '</style>' +
              '<div class="triangle-down"></div>',
     spike_type: SpikeType()
@@ -73,8 +76,52 @@ function placeMarker(position, map, started) {
   //   }
   // });
 
-  // google.maps.event.addListener(marker, "click", function(e) {
-  //   e.stopPropagation();
+  (function(marker) {
+                 // add click event
+                 google.maps.event.addListener(marker, 'click', function() {
+                   if (this.clicked == false) {
+                     this.setContent('<style>' +
+                     '#talkbubble {' +
+                           'width: 80px;' +
+                           'height: 80px;' +
+                           'background: #660000;' +
+                           'position: relative;' +
+                           'bottom: 20px;' +
+                           '-moz-border-radius: 5px;' +
+                           '-webkit-border-radius: 5px;' +
+                           'border-radius: 10px;}' +
+                         '#talkbubble:before {' +
+                           'content: "";' +
+                           'position: absolute;' +
+                           'top: 100%;' +
+                           'right: 38%;' +
+                           // 'top: 7px;' +
+                           'width: 0;' +
+                           'height: 0;' +
+                           'border-left: 10px solid transparent;' +
+                           'border-right: 10px solid transparent;' +
+	                         `border-top: 20px solid #660000; }` +
+                              '</style>' +
+                              '<div id="talkbubble"></div>')
+                     this.clicked = true
+                   } else {
+                     spike_color = SpikeColor(started);
+                     this.setContent('<style>' +
+                              '.triangle-down {' +
+                              'width: 0;' +
+                              'height: 0;' +
+                              'border-left: 10px solid transparent;' +
+                              'border-right: 10px solid transparent;' +
+                              'border-top: 20px solid #660000}' +
+                              '</style>' +
+                              '<div class="triangle-down"></div>')
+                     this.clicked = false
+                   }
+                 });
+             })(marker);
+
+  // marker.addListener("click", function() {
+  //   // e.stopPropagation();
   //   if (this.clicked == false) {
   //     this.setContent('<style>' +
   //              '.triangle-down {' +
@@ -112,8 +159,6 @@ endTripDiv.index = 2;
 map.controls[google.maps.ControlPosition.TOP_LEFT].push(startTripDiv);
 map.controls[google.maps.ControlPosition.TOP_CENTER].push(endTripDiv);
 
-var marker_list = {}
-
 var started = false
 
 var delete_marker = function(uuid) {
@@ -129,26 +174,6 @@ var delete_marker = function(uuid) {
 //   });
 //   infowindow.open(map, marker_list[uuid]);
 // }
-
-var iw = function() {
-  // var infowindow = new google.maps.InfoWindow;
-  // google.maps.event.addListener(marker, 'click', (function() {
-  //        return function() {
-  //            marker.setIcon('http://i.stack.imgur.com/t7vAK.png')
-  //            // infowindow.setContent("<table style=\"width:100%\">\r\n  <tr>\r\n    <td>Ersin<\/td>\r\n    <td>Daniel<\/td> \r\n  <\/tr>\r\n<\/table>");
-  //            // infowindow.open(map, marker);
-  //        }
-  //      })
-  // (marker));
-
-  // google.maps.event.addListener(marker, 'mouseover', function() {
-  //     marker.setIcon('https://www.ruralshores.com/assets/marker-icon.png');
-  // });
-  //
-  // google.maps.event.addListener(marker, 'mouseout', function() {
-  //     marker.setIcon();
-  // });
-}
 
 function uuidv4() {
   return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
