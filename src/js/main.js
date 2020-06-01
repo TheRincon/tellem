@@ -1,3 +1,4 @@
+var started = false
 var map = new google.maps.Map(document.getElementById('map'), {
   zoom: 8,
   center: {
@@ -7,28 +8,33 @@ var map = new google.maps.Map(document.getElementById('map'), {
   mapTypeId: google.maps.MapTypeId.TERRAIN
 });
 
-function placeMarker(position, map, started) {
+function placeMarker(position, map) {
   var marker_uuid = uuidv4();
-  spike_color = SpikeColor(started);
+  spike_type_ = SpikeType();
+  spike_color_ = '';
+  if (spike_type_ == 'start_spike') {
+    spike_color_ = '#004225'
+  } else {
+    spike_color_ = '#660000'
+  }
   var marker = new RichMarker({
     position: position,
     map: map,
     optimized: false,
     id: marker_uuid,
     clicked: false,
-    clickable: true,
-    draggable: false,
+    spike_color: spike_color_,
+    spike_type: spike_type_,
     cursor: 'pointer',
     content: '<style>' +
-             '.triangle-down {' +
+             `.${spike_type_} {` +
  	           'width: 0;' +
 	           'height: 0;' +
 	           'border-left: 10px solid transparent;' +
 	           'border-right: 10px solid transparent;' +
-	           `border-top: 20px solid #660000; }` +
+	           `border-top: 20px solid ${spike_color_}; }` +
              '</style>' +
-             '<div class="triangle-down"></div>',
-    spike_type: SpikeType()
+             `<div class="${spike_type_}"></div>`
   });
 
   (function(marker) {
@@ -36,7 +42,7 @@ function placeMarker(position, map, started) {
                  google.maps.event.addListener(marker, 'click', function() {
                    if (this.clicked == false) {
                      this.setContent('<style>' +
-                     '#talkbubble {' +
+                     `#talkbubble-${this.spike_type} {` +
                            'width: 80px;' +
                            'height: 80px;' +
                            'background: #ffffff;' +
@@ -44,9 +50,9 @@ function placeMarker(position, map, started) {
                            'bottom: 15px;' +
                            '-moz-border-radius: 5px;' +
                            '-webkit-border-radius: 5px;' +
-                           'border: thick solid #660000;' +
+                           `border: thick solid ${this.spike_color};` +
                            'border-radius: 10px;}' +
-                         '#talkbubble:before {' +
+                         `#talkbubble-${this.spike_type}:before {` +
                            'content: "";' +
                            'position: absolute;' +
                            'top: 100%;' +
@@ -58,24 +64,23 @@ function placeMarker(position, map, started) {
                            'box-shadow: none;' +
                            'border-left: 10px solid transparent;' +
                            'border-right: 10px solid transparent;' +
-	                         `border-top: 20px solid #660000; }` +
+	                         `border-top: 20px solid ${this.spike_color}; }` +
                               '</style>' +
-                              '<div id="talkbubble">' +
+                              `<div id="talkbubble-${this.spike_type}">` +
                               '<form action="/file-upload" class="dropzone"' +
                               'id="upload-dropzone"></form>' +
                               '</div>')
                      this.clicked = true
                    } else {
-                     spike_color = SpikeColor(started);
                      this.setContent('<style>' +
-                              '.triangle-down {' +
+                              `.${this.spike_type} {` +
                               'width: 0;' +
                               'height: 0;' +
                               'border-left: 10px solid transparent;' +
                               'border-right: 10px solid transparent;' +
-                              'border-top: 20px solid #660000}' +
+                              `border-top: 20px solid ${this.spike_color}}` +
                               '</style>' +
-                              '<div class="triangle-down"></div>')
+                              `<div class="${this.spike_type}"></div>`)
                      this.clicked = false
                    }
                  });
@@ -93,8 +98,6 @@ endTripDiv.index = 2;
 map.controls[google.maps.ControlPosition.TOP_LEFT].push(startTripDiv);
 map.controls[google.maps.ControlPosition.TOP_CENTER].push(endTripDiv);
 
-var started = false
-
 var delete_marker = function(uuid) {
   var delete_candidate = marker_list[uuid];
   delete_candidate.setMap(null);
@@ -104,14 +107,6 @@ function uuidv4() {
   return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
     (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
   );
-}
-
-function SpikeColor() {
-  if (started == true) {
-    return '#004225'
-  } else {
-    return '#660000'
-  }
 }
 
 function SpikeType() {
@@ -151,8 +146,6 @@ function TripControl(tripDiv, map, inner_html, color) {
   controlUI.addEventListener('click', function() {
     if (started == false) {
       started = true
-    } else {
-      started = false
     }
   });
 
@@ -160,5 +153,8 @@ function TripControl(tripDiv, map, inner_html, color) {
 
 // This event listener calls addMarker() when the map is clicked.
 google.maps.event.addListener(map, 'click', function(e) {
-  placeMarker(e.latLng, map, started);
+  placeMarker(e.latLng, map);
+  if (started == true) {
+    started = false;
+  }
 });
