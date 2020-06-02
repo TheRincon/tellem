@@ -65,11 +65,26 @@ function placeMarker(position, map) {
                            'border-left: 10px solid transparent;' +
                            'border-right: 10px solid transparent;' +
 	                         `border-top: 20px solid ${this.spike_color}; }` +
-                              '</style>' +
-                              `<div id="talkbubble-${this.spike_type}">` +
-                              '<form action="/file-upload" class="dropzone"' +
-                              'id="upload-dropzone"></form>' +
-                              '</div>')
+                           '.dropzone {' +
+                           'background: white;' +
+                           'border-radius: 5px;' +
+                           'border: 2px dashed rgb(0, 135, 247);' +
+                           'border-image: none;' +
+                           'max-width: 70px;' +
+                           'max-height: 70px;' +
+                           'margin-top: 3px;' +
+                           'margin-bottom: 5px;' +
+                           'margin-left: auto;' +
+                           'margin-right: auto; }' +
+                            '</style>' +
+                            `<div id="talkbubble-${this.spike_type}">` +
+                            '<form action="/file-upload" class="dropzone"' +
+                            'id="dropzone">' +
+                            '<DIV class="dz-image">' +
+                            '<img src="img/new_blue.svg" alt="plus" width="70" height="70"> ' +
+                            '</DIV>' +
+                            '</form>' +
+                            '</div>')
                      this.clicked = true
                    } else {
                      this.setContent('<style>' +
