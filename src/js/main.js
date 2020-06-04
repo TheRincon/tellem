@@ -39,7 +39,7 @@ function placeMarker(position, map) {
   if (spike_type_ == 'start_spike') {
     spike_color_ = '#004225'
   } else {
-    spike_color_ = '#660000'
+    spike_color_ = '#000000'
   }
   var marker = new RichMarker({
     position: position,
@@ -60,7 +60,7 @@ function placeMarker(position, map) {
 	           `border-top: 20px solid ${spike_color_}; }` +
              '</style>' +
              `<div class="${spike_type_}"></div>` +
-             `<div id="exit-marker-${marker_uuid.id}">` +
+             `<div id="exit-marker-${marker_uuid}">` +
              '</div>'
   });
 
@@ -82,9 +82,14 @@ function placeMarker(position, map) {
   //   delete_marker(this);
   // });
 
-  google.maps.event.addListener(marker, 'click', function() {
+  google.maps.event.addListener(marker, 'click', function(event) {
+    console.log(marker.clicked);
     if (marker.clicked == true) {
-      marker.clicked = false;
+      var el = document.getElementById(`exit-marker-${marker.id}`);
+      // var mark = document
+      if (el.contains(event.target)) {
+              marker.clicked = false;
+      }
     } else if (marker.clicked == false) {
       // https://css-tricks.com/the-shapes-of-css/
       marker.setContent('<style>' +
@@ -123,12 +128,11 @@ function placeMarker(position, map) {
            'margin-left: auto;' +
            'margin-right: auto; }' +
            `#exit-marker-${marker.id} {` +
-           'background-color: #ffffff;' +
            'max-width: 30px;' +
            'max-height: 30px;' +
            'position: absolute;' +
-           'top: 0px;' +
-           'right: 0px; }' +
+           'top: -10px;' +
+           'right: -10px; }' +
            '</style>' +
            `<div id="talkbubble-${marker.spike_type}">` +
            '<form action="/file-upload" class="dropzone"' +
@@ -138,11 +142,11 @@ function placeMarker(position, map) {
            '</div>' +
            '</form>' +
            `<div id="exit-marker-${marker.id}">` +
-           `<img src="img/redx.png" width="20" height="20">` +
+           `<img src="img/fin.png" width="20" height="20">` +
            '</div>' +
            '</div>')
       marker.clicked = true;
-      document.getElementById(`exit-marker-${marker.id}`).addEventListener("click", function() {
+      document.getElementById(`exit-marker-${marker.id}`).addEventListener("click", function(e) {
         marker.setContent('');
         marker.setContent('<style>' +
                  `.${marker.spike_type} {` +
