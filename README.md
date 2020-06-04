@@ -2,7 +2,9 @@
 
 Google Maps expanded.
 
-Quickly add photos, videos, notes, songs, etc. to a plotted trip or map. 
+Quickly add photos, videos, notes, songs, etc. to a plotted trip or map.
+
+![](tellem2.png)
 
 ## Made with [HTML5 Boilerplate](https://html5boilerplate.com/)
 

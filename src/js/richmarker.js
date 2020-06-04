@@ -730,9 +730,15 @@ RichMarker.prototype.onAdd = function() {
     this.markerWrapper_.appendChild(this.markerContent_);
 
     var that = this;
+    google.maps.event.addDomListener(this.markerContent_, 'rightclick', function(e) {
+      google.maps.event.trigger(that, 'rightclick', e);
+    });
     google.maps.event.addDomListener(this.markerContent_, 'click', function(e) {
       e.stopPropagation();
       google.maps.event.trigger(that, 'click', e);
+    });
+    google.maps.event.addDomListener(this.markerContent_, 'dblclick', function(e) {
+      google.maps.event.trigger(that, 'dblclick', e);
     });
     google.maps.event.addDomListener(this.markerContent_, 'mouseover', function(e) {
       google.maps.event.trigger(that, 'mouseover', e);
@@ -749,7 +755,7 @@ RichMarker.prototype.onAdd = function() {
 
   var panes = this.getPanes();
   if (panes) {
-    panes.overlayMouseTarget.appendChild(this.markerWrapper_);
+    panes.overlayImage.appendChild(this.markerWrapper_);
   }
 
   google.maps.event.trigger(this, 'ready');
