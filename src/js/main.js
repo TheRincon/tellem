@@ -1,3 +1,5 @@
+// look into this: https://github.com/atmist/snazzy-info-window
+
 var started = false
 var marker_list = {}
 var singleClick = false;
@@ -12,7 +14,6 @@ function init() {
     mapTypeId: google.maps.MapTypeId.TERRAIN
   });
 
-  // This event listener calls addMarker() when the map is clicked.
   google.maps.event.addListener(map, 'click', function(e) {
     placeMarker(e.latLng, map);
     if (started == true) {
@@ -83,13 +84,13 @@ function placeMarker(position, map) {
   // });
 
   google.maps.event.addListener(marker, 'click', function(event) {
-    console.log(marker.clicked);
     if (marker.clicked == true) {
       var el = document.getElementById(`exit-marker-${marker.id}`);
       // var mark = document
       if (el.contains(event.target)) {
               marker.clicked = false;
       }
+      marker.clicked = false;
     } else if (marker.clicked == false) {
       // https://css-tricks.com/the-shapes-of-css/
       marker.setContent('<style>' +
