@@ -129,11 +129,12 @@ function placeMarker(position, map) {
            'margin-left: auto;' +
            'margin-right: auto; }' +
            `#exit-marker-${marker.id} {` +
-           'max-width: 30px;' +
-           'max-height: 30px;' +
+           'max-width: 40px;' +
+           'max-height: 40px;' +
+           'shadow: none;' +
            'position: absolute;' +
-           'top: -10px;' +
-           'right: -10px; }' +
+           'top: -15px;' +
+           'right: -15px; }' +
            '</style>' +
            `<div id="talkbubble-${marker.spike_type}">` +
            '<form action="/file-upload" class="dropzone"' +
@@ -143,7 +144,7 @@ function placeMarker(position, map) {
            '</div>' +
            '</form>' +
            `<div id="exit-marker-${marker.id}">` +
-           `<img src="img/fin.png" width="20" height="20">` +
+           `<img src="img/bb.png" width="30" height="30">` +
            '</div>' +
            '</div>')
       marker.clicked = true;
