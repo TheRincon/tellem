@@ -98,6 +98,7 @@ function placeMarker(position, map) {
            'width: 80px;' +
            'height: 80px;' +
            'background: #ffffff;' +
+           'z-index: 999;' +
            'position: relative;' +
            'bottom: 15px;' +
            '-moz-border-radius: 5px;' +
@@ -117,7 +118,7 @@ function placeMarker(position, map) {
            'border-left: 10px solid transparent;' +
            'border-right: 10px solid transparent;' +
            `border-top: 20px solid ${marker.spike_color}; }` +
-           '.dropzone {' +
+           '#drop-area {' +
            'background: white;' +
            'border-radius: 5px;' +
            'border: 2px dashed rgb(0, 135, 247);' +
@@ -128,6 +129,7 @@ function placeMarker(position, map) {
            'margin-bottom: 5px;' +
            'margin-left: auto;' +
            'margin-right: auto; }' +
+           '#drop-area.highlight { border-color: purple; }' +
            `#exit-marker-${marker.id} {` +
            'max-width: 40px;' +
            'max-height: 40px;' +
@@ -135,18 +137,96 @@ function placeMarker(position, map) {
            'position: absolute;' +
            'top: -15px;' +
            'right: -15px; }' +
+           '#fileElem { display: none; }' +
            '</style>' +
            `<div id="talkbubble-${marker.spike_type}">` +
-           '<form action="/file-upload" class="dropzone"' +
-           'id="dz">' +
-           '<div class="dz-image">' +
-           '<img src="img/new_blue.svg" alt="plus" width="70" height="70"> ' +
-           '</div>' +
+           '<div id="drop-area">' +
+           '<form class="dz">' +
+           '<input type="file" id="fileElem" multiple accept="image/*" onchange="handleFiles(this.files)">' +
            '</form>' +
+           '<div id="gallery" /></div>' +
+           '<img src="img/new_blue.svg" alt="plus" width="70" height="70"> ' +
+           '</form>' +
+           '</div>' +
            `<div id="exit-marker-${marker.id}">` +
            `<img src="img/bb.png" width="30" height="30">` +
-           '</div>' +
            '</div>')
+          let dropArea = document.getElementById("drop-area")
+
+          // Prevent default drag behaviors
+          ;['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropArea.addEventListener(eventName, preventDefaults, false)
+            document.body.addEventListener(eventName, preventDefaults, false)
+          })
+
+          // Highlight drop area when item is dragged over it
+          ;['dragenter', 'dragover'].forEach(eventName => {
+            dropArea.addEventListener(eventName, highlight, false)
+          })
+
+          ;['dragleave', 'drop'].forEach(eventName => {
+            dropArea.addEventListener(eventName, unhighlight, false)
+          })
+
+          // Handle dropped files
+          dropArea.addEventListener('drop', handleDrop, false)
+
+          function preventDefaults (e) {
+            e.preventDefault()
+            e.stopPropagation()
+          }
+
+          function highlight(e) {
+            dropArea.classList.add('highlight')
+          }
+
+          function unhighlight(e) {
+            dropArea.classList.remove('active')
+          }
+
+          function handleDrop(e) {
+            var dt = e.dataTransfer
+            var files = dt.files
+
+            handleFiles(files)
+          }
+
+          function handleFiles(files) {
+            files = [...files]
+            files.forEach(uploadFile)
+            files.forEach(previewFile)
+          }
+
+          function previewFile(file) {
+            let reader = new FileReader()
+            reader.readAsDataURL(file)
+            reader.onloadend = function() {
+              let img = document.createElement('img')
+              img.src = reader.result
+              document.getElementById('gallery').appendChild(img)
+            }
+          }
+
+          function uploadFile(file, i) {
+            var url = ''
+            var xhr = new XMLHttpRequest()
+            var formData = new FormData()
+            xhr.open('POST', url, true)
+            xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest')
+
+            xhr.addEventListener('readystatechange', function(e) {
+              if (xhr.readyState == 4 && xhr.status == 200) {
+                console.log('4234');
+              }
+              else if (xhr.readyState == 4 && xhr.status != 200) {
+                // Error. Inform the user
+              }
+            })
+
+            formData.append('upload_preset', 'ujpu6gyk')
+            formData.append('file', file)
+            xhr.send(formData)
+          }
       marker.clicked = true;
       document.getElementById(`exit-marker-${marker.id}`).addEventListener("click", function(e) {
         marker.setContent('');
@@ -212,64 +292,3 @@ function TripControl(tripDiv, map, inner_html, color) {
     }
   });
 }
-
-// var dropzone = new Dropzone('#dz', {
-//   previewTemplate: document.querySelector('#preview-template').innerHTML,
-//   parallelUploads: 4,
-//   thumbnailHeight: 50,
-//   thumbnailWidth: 50,
-//   maxFilesize: 500,
-//   filesizeBase: 1000,
-//   thumbnail: function(file, dataUrl) {
-//     if (file.previewElement) {
-//       file.previewElement.classList.remove("dz-file-preview");
-//       var images = file.previewElement.querySelectorAll("[data-dz-thumbnail]");
-//       for (var i = 0; i < images.length; i++) {
-//         var thumbnailElement = images[i];
-//         thumbnailElement.alt = file.name;
-//         thumbnailElement.src = dataUrl;
-//       }
-//       setTimeout(function() { file.previewElement.classList.add("dz-image-preview"); }, 1);
-//     }
-//   }
-//
-// });
-//
-// // demo until backend is done
-// var minSteps = 6,
-//     maxSteps = 60,
-//     timeBetweenSteps = 100,
-//     bytesPerStep = 100000;
-//
-// dropzone.uploadFiles = function(files) {
-//   var self = this;
-//
-//   for (var i = 0; i < files.length; i++) {
-//
-//     var file = files[i];
-//     totalSteps = Math.round(Math.min(maxSteps, Math.max(minSteps, file.size / bytesPerStep)));
-//
-//     for (var step = 0; step < totalSteps; step++) {
-//       var duration = timeBetweenSteps * (step + 1);
-//       setTimeout(function(file, totalSteps, step) {
-//         return function() {
-//           file.upload = {
-//             progress: 100 * (step + 1) / totalSteps,
-//             total: file.size,
-//             bytesSent: (step + 1) * file.size / totalSteps
-//           };
-//
-//           self.emit('uploadprogress', file, file.upload.progress, file.upload.bytesSent);
-//           if (file.upload.progress == 100) {
-//             file.status = Dropzone.SUCCESS;
-//             self.emit("success", file, 'success', null);
-//             self.emit("complete", file);
-//             self.processQueue();
-//             //document.getElementsByClassName("dz-success-mark").style.opacity = "1";
-//           }
-//         };
-//       }(file, totalSteps, step), duration);
-//     }
-//   }
-// }
-// end of demo
