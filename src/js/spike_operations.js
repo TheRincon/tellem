@@ -27,7 +27,7 @@ function set_bubble(marker) {
      'border-left: 10px solid transparent;' +
      'border-right: 10px solid transparent;' +
      `border-top: 20px solid ${marker.spike_color}; }` +
-     '#drop-area {' +
+     `#drop-area-${marker.id} {` +
      'background: white;' +
      'border-radius: 5px;' +
      'border: 2px dashed rgb(0, 135, 247);' +
@@ -38,7 +38,7 @@ function set_bubble(marker) {
      'margin-bottom: 5px;' +
      'margin-left: auto;' +
      'margin-right: auto; }' +
-     '#drop-area.highlight { border-color: purple; }' +
+     `#drop-area-${marker.id}.highlight { border-color: purple; }` +
      `#exit-marker-${marker.id} {` +
      'max-width: 40px;' +
      'max-height: 40px;' +
@@ -49,15 +49,15 @@ function set_bubble(marker) {
      '#fileElem { display: none; }' +
      '</style>' +
      `<div id="talkbubble-${marker.spike_type}">` +
-     '<div id="drop-area">' +
+     `<div id="drop-area-${marker.id}">` +
      '<form class="dz">' +
      '<input type="file" id="fileElem" multiple accept="image/*" onchange="handleFiles(this.files)">' +
      '</form>' +
-     '<div id="gallery" /></div>' +
+     `<div id="gallery-${marker.id}" class="gallery" /></div>` +
      '<img src="img/new_blue.svg" alt="plus" width="70" height="70"> ' +
      '</form>' +
      '</div>' +
-     '<div id="hid" style="display: none;"></div>' +
+     `<div id="hid-${marker.id}" style="display: none;"></div>` +
      `<div id="exit-marker-${marker.id}">` +
      `<img src="img/bb.png" width="30" height="30">` +
      '</div>'
@@ -79,54 +79,11 @@ function set_spike(marker) {
   );
 }
 
+function SpikeType() {
+  return (started ? 'start_spike' : 'normal_spike')
+}
+
 function preventDefaults (e) {
   e.preventDefault()
   e.stopPropagation()
-}
-
-function highlight(e) {
-  let dropArea = document.getElementById("drop-area")
-  dropArea.classList.add('highlight')
-}
-
-function unhighlight(e) {
-  let dropArea = document.getElementById("drop-area")
-  dropArea.classList.remove('active')
-}
-
-function handleDrop(e) {
-  var dt = e.dataTransfer
-  var files = dt.files
-
-  handleFiles(files)
-}
-
-function handleFiles(files) {
-  files = [...files]
-  files.forEach(uploadFile)
-  files.forEach(previewFile)
-}
-
-function previewFile(file) {
-  let reader = new FileReader()
-  reader.readAsDataURL(file)
-  reader.onloadend = function() {
-    let img = document.createElement('img')
-    img.src = reader.result
-    document.getElementById('gallery').appendChild(img)
-  }
-}
-
-function uploadFile(file) {
-  let url = 'YOUR URL HERE'
-  let formData = new FormData()
-
-  formData.append('file', file)
-
-  fetch(url, {
-    method: 'POST',
-    body: formData
-  })
-  .then(() => { /* Done. Inform the user */ })
-  .catch(() => { /* Error. Inform the user */ })
 }

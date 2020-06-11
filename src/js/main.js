@@ -65,31 +65,24 @@ function placeMarker(position, map) {
              '</div>'
   });
 
-  clearSingleClick = function(fun){
-      singleClick = false;
-  };
-
   function delete_marker(marker) {
     marker.setMap(null);
   }
 
-  google.maps.event.addListener(marker, 'rightclick', function(e) {
-    console.log('42893748');
-    delete_marker(this);
-  });
-
-  // this works, just saving for another use
-  // google.maps.event.addListener(marker, 'dblclick', function(e) {
-  //   delete_marker(this);
-  // });
-
   google.maps.event.addListener(marker, 'click', function(event) {
     // bug that if the bubble clicked twice it has to be double clicked closed.
-    if ((marker.clicked == true) && (document.getElementById('hid') == null)) {
+    if ((marker.clicked == true) && (document.getElementById(`hid-${marker.id}`) == null)) {
       marker.clicked = false;
     } else if (marker.clicked == false) {
       set_bubble(marker);
-      let dropArea = document.getElementById("drop-area")
+      var dropArea = document.getElementById(`drop-area-${marker.id}`)
+      function highlight(e) {
+        dropArea.classList.add('highlight')
+      }
+
+      function unhighlight(e) {
+        dropArea.classList.remove('active')
+      }
 
       // Prevent default drag behaviors
       ;['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
@@ -109,6 +102,42 @@ function placeMarker(position, map) {
       // Handle dropped files
       dropArea.addEventListener('drop', handleDrop, false)
 
+      function handleDrop(e) {
+        var dt = e.dataTransfer
+        var files = dt.files
+
+        handleFiles(files)
+      }
+
+      function previewFile(file) {
+        let reader = new FileReader()
+        reader.readAsDataURL(file)
+        reader.onloadend = function() {
+          let img = document.createElement('img')
+          img.src = reader.result
+          document.getElementById(`gallery-${marker.id}`).appendChild(img)
+        }
+      }
+      function handleFiles(files) {
+        files = [...files]
+        files.forEach(uploadFile)
+        files.forEach(previewFile)
+      }
+
+      function uploadFile(file) {
+        let url = 'YOUR URL HERE'
+        let formData = new FormData()
+
+        formData.append('file', file)
+
+        fetch(url, {
+          method: 'POST',
+          body: formData
+        })
+        .then(() => { /* Done. Inform the user */ })
+        .catch(() => { /* Error. Inform the user */ })
+      }
+
       document.getElementById(`exit-marker-${marker.id}`).addEventListener("click", function(e) {
         set_spike(marker);
       });
@@ -124,16 +153,7 @@ function uuidv4() {
   );
 }
 
-function SpikeType() {
-  if (started == true) {
-    return 'start_spike'
-  } else {
-    return 'normal_spike'
-  }
-}
-
 function TripControl(tripDiv, map, inner_html, color) {
-
   // Set CSS for the control border.
   var controlUI = document.createElement('div');
   controlUI.style.backgroundColor = color;
