@@ -4,7 +4,7 @@ function set_bubble(marker) {
   // https://css-tricks.com/the-shapes-of-css/
   marker.setContent('<style>' +
      `#talkbubble-${marker.spike_type} {` +
-     'width: 80px;' +
+     'width: 160px;' +
      'height: 80px;' +
      'background: #ffffff;' +
      'z-index: 999;' +
@@ -38,8 +38,10 @@ function set_bubble(marker) {
      'margin-bottom: 5px;' +
      'margin-left: auto;' +
      'margin-right: auto; }' +
-     `#drop-area-${marker.id}.highlight { border-color: purple; }` +
+     `#drop-area-${marker.id}.highlight { border-color: purple; max-width: 150px; }` +
+     `#gallery-${marker.id} { max-height: 70px; max-width: 350px; }` +
      `#exit-marker-${marker.id} {` +
+     'float: left;' +
      'max-width: 40px;' +
      'max-height: 40px;' +
      'shadow: none;' +

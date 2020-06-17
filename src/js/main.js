@@ -49,6 +49,7 @@ function placeMarker(position, map) {
     id: marker_uuid,
     clicked: false,
     shadow: false,
+    media_types: [],
     spike_color: spike_color_,
     spike_type: spike_type_,
     cursor: 'pointer',
@@ -75,9 +76,13 @@ function placeMarker(position, map) {
       marker.clicked = false;
     } else if (marker.clicked == false) {
       set_bubble(marker);
+
+      // https://www.smashingmagazine.com/2018/01/drag-drop-file-uploader-vanilla-js/
+      // https://codepen.io/joezimjs/pen/yPWQbd
       var dropArea = document.getElementById(`drop-area-${marker.id}`)
       function highlight(e) {
         dropArea.classList.add('highlight')
+
       }
 
       function unhighlight(e) {
