@@ -3,8 +3,8 @@
 function set_bubble(marker) {
   // https://css-tricks.com/the-shapes-of-css/
   marker.setContent('<style>' +
-     `#talkbubble-${marker.spike_type} {` +
-     'width: 160px;' +
+     `#talkbubble-${marker.spike_type}-${marker.id} {` +
+     'width: 80px;' +
      'height: 80px;' +
      'background: #ffffff;' +
      'z-index: 999;' +
@@ -14,7 +14,7 @@ function set_bubble(marker) {
      '-webkit-border-radius: 5px;' +
      `border: thick solid ${marker.spike_color};` +
      'border-radius: 10px;}' +
-     `#talkbubble-${marker.spike_type}:before {` +
+     `#talkbubble-${marker.spike_type}-${marker.id}:before {` +
      'content: "";' +
      'position: absolute;' +
      'top: 100%;' +
@@ -38,8 +38,8 @@ function set_bubble(marker) {
      'margin-bottom: 5px;' +
      'margin-left: auto;' +
      'margin-right: auto; }' +
-     `#drop-area-${marker.id}.highlight { border-color: purple; max-width: 150px; }` +
-     `#gallery-${marker.id} { max-height: 70px; max-width: 350px; }` +
+     `#drop-area-${marker.id}.highlight { border-color: purple; max-width: 450px; }` +
+     `#gallery-${marker.id} { max-height: 70px; max-width: 450px; }` +
      `#exit-marker-${marker.id} {` +
      'float: left;' +
      'max-width: 40px;' +
@@ -50,7 +50,7 @@ function set_bubble(marker) {
      'right: -15px; }' +
      '#fileElem { display: none; }' +
      '</style>' +
-     `<div id="talkbubble-${marker.spike_type}">` +
+     `<div id="talkbubble-${marker.spike_type}-${marker.id}">` +
      `<div id="drop-area-${marker.id}">` +
      '<form class="dz">' +
      '<input type="file" id="fileElem" multiple accept="image/*" onchange="handleFiles(this.files)">' +

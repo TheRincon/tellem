@@ -3,6 +3,7 @@
 var started = false
 var marker_list = {}
 var singleClick = false;
+markers = {}
 function init() {
   var map = new google.maps.Map(document.getElementById('map'), {
     disableDoubleClickZoom: true,
@@ -50,6 +51,7 @@ function placeMarker(position, map) {
     clicked: false,
     shadow: false,
     media_types: [],
+    media_length: 0,
     spike_color: spike_color_,
     spike_type: spike_type_,
     cursor: 'pointer',
@@ -66,6 +68,8 @@ function placeMarker(position, map) {
              '</div>'
   });
 
+  markers[marker.id] = marker
+
   function delete_marker(marker) {
     marker.setMap(null);
   }
@@ -76,13 +80,12 @@ function placeMarker(position, map) {
       marker.clicked = false;
     } else if (marker.clicked == false) {
       set_bubble(marker);
-
       // https://www.smashingmagazine.com/2018/01/drag-drop-file-uploader-vanilla-js/
       // https://codepen.io/joezimjs/pen/yPWQbd
       var dropArea = document.getElementById(`drop-area-${marker.id}`)
+      var bubble = document.getElementById(`talkbubble-${marker.spike_type}-${marker.id}`)
       function highlight(e) {
         dropArea.classList.add('highlight')
-
       }
 
       function unhighlight(e) {
@@ -106,6 +109,7 @@ function placeMarker(position, map) {
 
       // Handle dropped files
       dropArea.addEventListener('drop', handleDrop, false)
+      dropArea.addEventListener('drop', set_width)
 
       function handleDrop(e) {
         var dt = e.dataTransfer
@@ -141,6 +145,16 @@ function placeMarker(position, map) {
         })
         .then(() => { /* Done. Inform the user */ })
         .catch(() => { /* Error. Inform the user */ })
+      }
+
+      function set_width() {
+        marker.media_length += 1;
+        sw = marker_width(marker.media_length);
+        bubble.style.width = `${sw}px`;
+      }
+
+      function marker_width(len) {
+        return ((len + 1) * 80).toString();
       }
 
       document.getElementById(`exit-marker-${marker.id}`).addEventListener("click", function(e) {
