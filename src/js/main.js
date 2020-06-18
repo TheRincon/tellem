@@ -154,7 +154,7 @@ function placeMarker(position, map) {
       }
 
       function marker_width(len) {
-        return ((len + 1) * 80).toString();
+        return ((len + 1) * 75).toString();
       }
 
       document.getElementById(`exit-marker-${marker.id}`).addEventListener("click", function(e) {
