@@ -52,6 +52,11 @@ function placeMarker(position, map) {
     shadow: false,
     media_types: [],
     media_length: 0,
+    pdf_urls: [],
+    image_urls: [],
+    video_urls: [],
+    notes_urls: [],
+    music_urls: [],
     spike_color: spike_color_,
     spike_type: spike_type_,
     cursor: 'pointer',
@@ -83,7 +88,6 @@ function placeMarker(position, map) {
       // https://www.smashingmagazine.com/2018/01/drag-drop-file-uploader-vanilla-js/
       // https://codepen.io/joezimjs/pen/yPWQbd
       var dropArea = document.getElementById(`drop-area-${marker.id}`)
-      var bubble = document.getElementById(`talkbubble-${marker.spike_type}-${marker.id}`)
       function highlight(e) {
         dropArea.classList.add('highlight')
       }
@@ -121,12 +125,15 @@ function placeMarker(position, map) {
       function previewFile(file) {
         let reader = new FileReader()
         reader.readAsDataURL(file)
-        reader.onloadend = function() {
-          let img = document.createElement('img')
-          img.src = reader.result
-          document.getElementById(`gallery-${marker.id}`).appendChild(img)
+        if (marker.media_length < 5) {
+          reader.onloadend = function() {
+            let img = document.createElement('img')
+            img.src = reader.result
+            document.getElementById(`gallery-${marker.id}`).appendChild(img)
+          }
         }
       }
+
       function handleFiles(files) {
         files = [...files]
         files.forEach(uploadFile)
@@ -148,13 +155,35 @@ function placeMarker(position, map) {
       }
 
       function set_width() {
+        var bubble = document.getElementById(`talkbubble-${marker.spike_type}-${marker.id}`)
         marker.media_length += 1;
         sw = marker_width(marker.media_length);
         bubble.style.width = `${sw}px`;
       }
 
       function marker_width(len) {
-        return ((len + 1) * 75).toString();
+        mw = len >= 5 ? '450' : ((len + 1) * 75).toString();
+        return mw
+      }
+
+      function pick_media_type(filename) {
+        return filename.split('.').pop();
+      }
+
+      function add_media_types(file) {
+        switch(pick_media_type(file)) {
+          case 'jpeg':
+            // code block
+            break;
+          case 'jpg':
+            // code block
+            break;
+          case 'png':
+            // code block
+            break;
+          default:
+            // code block
+        }
       }
 
       document.getElementById(`exit-marker-${marker.id}`).addEventListener("click", function(e) {
