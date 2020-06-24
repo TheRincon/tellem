@@ -81,6 +81,21 @@ function set_spike(marker) {
   );
 }
 
+function set_spike_color(spike_type) {
+  switch(spike_type) {
+    case 'start_spike':
+      return '#004225'
+    case 'normal_spike':
+      return '#000000'
+    case 'end_spike':
+      return '#660000'
+    case 'ticket_spike':
+      return '#000000'
+    default:
+      // code block
+  }
+}
+
 function SpikeType() {
   return (started ? 'start_spike' : 'normal_spike')
 }
