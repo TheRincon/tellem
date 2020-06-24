@@ -141,17 +141,26 @@ function placeMarker(position, map) {
       }
 
       function uploadFile(file) {
-        let url = 'YOUR URL HERE'
-        let formData = new FormData()
+        let url = 'http://127.0.0.1:8080/';
+        let formData = new FormData();
 
         formData.append('file', file)
 
         fetch(url, {
           method: 'POST',
+          headers: {
+            'spike_id': `${marker.id}`,
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'GET, POST',
+            'Access-Control-Allow-Headers': 'spike_id',
+          },
           body: formData
         })
-        .then(() => { /* Done. Inform the user */ })
-        .catch(() => { /* Error. Inform the user */ })
+        .then(response => response.json())
+        .then(result => {
+          console.log('Success:', result);
+        })
+        .catch((error) => { console.error('Error:', error); });
       }
 
       function set_width() {
@@ -162,8 +171,7 @@ function placeMarker(position, map) {
       }
 
       function marker_width(len) {
-        mw = len >= 5 ? '450' : ((len + 1) * 75).toString();
-        return mw
+        return len >= 5 ? '450' : ((len + 1) * 75).toString();
       }
 
       function pick_media_type(filename) {
