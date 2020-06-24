@@ -2,6 +2,8 @@
 
 Google Maps expanded.
 
+![](tellem3.png)
+
 Quickly add photos, videos, notes, songs, etc. to a plotted trip or map.
 
 ![](tellem2.png)

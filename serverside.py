@@ -10,19 +10,20 @@ CORS(app, support_credentials=True)
 
 def sqlite_ops():
     sql_create_media = """ CREATE TABLE IF NOT EXISTS media (
-                                        id integer PRIMARY KEY,
+                                        id INTEGER PRIMARY KEY,
                                         spike_id text NOT NULL,
                                         file_path text NOT NULL
                                     ); """
 
     sql_create_spikes = """ CREATE TABLE IF NOT EXISTS spikes (
-                                    spike_id text PRIMARY KEY,
+                                    id INTEGER PRIMARY KEY,
+                                    spike_id text NOT NULL,
                                     lat text NOT NULL,
-                                    lon text NOT NULL,
+                                    lng text NOT NULL,
                                     spike_type text NOT NULL
                                 ); """
 
-    conn = create_connection('media.db')
+    conn = create_connection('tellem.db')
     # create tables
     if conn is not None:
         # create projects table
@@ -53,9 +54,23 @@ def create_table(conn, create_table_sql):
         print(e)
 
 conn = sqlite_ops()
+cursor = conn.cursor()
 
-def insert_spike_media(spike_id):
-    pass
+def insert_spike_media(conn, spike_id, file_path):
+    cursor = conn.cursor()
+    cursor.execute(
+        "INSERT INTO media (spike_id, file_path ) VALUES (?, ?)",
+        (spike_id, file_path)
+    )
+    conn.commit()
+
+def add_spike(conn, spike_id, spike_type, lat, lng):
+    cursor = conn.cursor()
+    cursor.execute(
+        "INSERT INTO spikes (spike_id, lat, lng, spike_type ) VALUES (?, ?, ?, ?)",
+        (spike_id, lat, lng, spike_type)
+    )
+    conn.commit()
 
 @app.route('/media', methods=['POST'])
 @cross_origin(supports_credentials=True)
@@ -68,13 +83,18 @@ def handle_image():
         return redirect(request.url)
     if file:
         filename = secure_filename(file.filename)
-        file.save(os.path.join('media', filename))
+        file_path = os.path.join('media', filename)
+        file.save(file_path)
+        with sqlite3.connect("tellem.db") as con:
+            insert_spike_media(con, spike_id, file_path)
     return jsonify({"status":"ok"})
 
 @app.route('/spike', methods=['POST'])
 @cross_origin(supports_credentials=True)
 def add_spike_to_db():
     body = json.loads(request.data.decode('utf-8'))
+    with sqlite3.connect("tellem.db") as con:
+        add_spike(con, body['spike_id'], body['lat'], body['lng'], body['spike_type'])
     return jsonify({"status":"ok"})
 
 
