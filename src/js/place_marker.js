@@ -32,6 +32,8 @@ function placeMarker(position, map) {
              '</div>'
   });
 
+  console.log(marker.id);
+
   markers[marker.id] = marker
 
   function delete_marker(marker) {
@@ -100,7 +102,7 @@ function placeMarker(position, map) {
       }
 
       function uploadFile(file) {
-        let url = 'http://127.0.0.1:8080/';
+        let url = 'http://127.0.0.1:8080/media';
         let formData = new FormData();
 
         formData.append('file', file)
@@ -116,17 +118,14 @@ function placeMarker(position, map) {
           body: formData
         })
         .then(response => response.json())
-        .then(result => {
-          console.log('Success:', result);
-        })
         .catch((error) => { console.error('Error:', error); });
       }
 
       function set_width() {
         var bubble = document.getElementById(`talkbubble-${marker.spike_type}-${marker.id}`)
         marker.media_length += 1;
-        sw = marker_width(marker.media_length);
-        bubble.style.width = `${sw}px`;
+        gallery_width = marker_width(marker.media_length);
+        bubble.style.width = `${gallery_width}px`;
       }
 
       function marker_width(len) {
@@ -160,4 +159,5 @@ function placeMarker(position, map) {
     }
   });
   map.panTo(position);
+  return marker // [marker.id, marker.spike_type]
 }

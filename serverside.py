@@ -3,6 +3,7 @@ from flask_cors import CORS, cross_origin
 from werkzeug.utils import secure_filename
 import os
 import sqlite3
+import json
 
 app = Flask(__name__)
 CORS(app, support_credentials=True)
@@ -54,11 +55,11 @@ def create_table(conn, create_table_sql):
 conn = sqlite_ops()
 
 def insert_spike_media(spike_id):
+    pass
 
-
-@app.route('/', methods=['POST'])
+@app.route('/media', methods=['POST'])
 @cross_origin(supports_credentials=True)
-def stuff():
+def handle_image():
     file = request.files['file']
     spike_id = request.headers['spike_id']
     if not os.path.exists('media'):
@@ -69,5 +70,12 @@ def stuff():
         filename = secure_filename(file.filename)
         file.save(os.path.join('media', filename))
     return jsonify({"status":"ok"})
+
+@app.route('/spike', methods=['POST'])
+@cross_origin(supports_credentials=True)
+def add_spike_to_db():
+    body = json.loads(request.data.decode('utf-8'))
+    return jsonify({"status":"ok"})
+
 
 app.run(port=8080)

@@ -16,7 +16,8 @@ function init() {
   });
 
   google.maps.event.addListener(map, 'click', function(e) {
-    placeMarker(e.latLng, map);
+    var marker = placeMarker(e.latLng, map);
+    send_spike_info(e.latLng.lat().toString(), e.latLng.lng().toString(), marker);
     if (started == true) {
       started = false;
     }
