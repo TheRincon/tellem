@@ -1,4 +1,4 @@
-function placeMarker(position, map) {
+function loadMarker(position, map) {
   var marker_uuid = uuidv4();
   spike_type_ = SpikeType();
   spike_color_ = set_spike_color(spike_type_)

@@ -15,6 +15,12 @@ function init() {
     mapTypeId: google.maps.MapTypeId.ROADMAP
   });
 
+  spikes = load_spikes();
+
+  console.log(spikes);
+
+  // spikes.forEach(myFunction);
+
   google.maps.event.addListener(map, 'click', function(e) {
     var marker = placeMarker(e.latLng, map);
     send_spike_info(e.latLng.lat().toString(), e.latLng.lng().toString(), marker);

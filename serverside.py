@@ -64,7 +64,25 @@ def insert_spike_media(conn, spike_id, file_path):
     )
     conn.commit()
 
-def add_spike(conn, spike_id, spike_type, lat, lng):
+def load_spikes(conn):
+    cursor = conn.cursor()
+    cursor.execute(
+        '''SELECT * FROM spikes;''',
+    )
+    data = cursor.fetchall()
+
+    return json.dumps(data)
+
+def load_spike_media(conn):
+    cursor = conn.cursor()
+    cursor.execute(
+        '''SELECT * FROM media;''',
+    )
+    data = cursor.fetchall()
+
+    return json.dumps(data)
+
+def add_spike(conn, spike_id, lat, lng, spike_type):
     cursor = conn.cursor()
     cursor.execute(
         "INSERT INTO spikes (spike_id, lat, lng, spike_type ) VALUES (?, ?, ?, ?)",
@@ -96,6 +114,20 @@ def add_spike_to_db():
     with sqlite3.connect("tellem.db") as con:
         add_spike(con, body['spike_id'], body['lat'], body['lng'], body['spike_type'])
     return jsonify({"status":"ok"})
+
+@app.route('/load_spikes', methods=['GET'])
+@cross_origin(supports_credentials=True)
+def load_spike_from_db():
+    with sqlite3.connect("tellem.db") as con:
+        spike_array = load_spikes(con)
+    return spike_array
+
+@app.route('/load_spike_media', methods=['GET'])
+@cross_origin(supports_credentials=True)
+def load_spike_media():
+    with sqlite3.connect("tellem.db") as con:
+        media = load_spike_media(con)
+    return media
 
 
 app.run(port=8080)
