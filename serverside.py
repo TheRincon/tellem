@@ -85,7 +85,7 @@ def load_spike_media(conn):
 def add_spike(conn, spike_id, lat, lng, spike_type):
     cursor = conn.cursor()
     cursor.execute(
-        "INSERT INTO spikes (spike_id, lat, lng, spike_type ) VALUES (?, ?, ?, ?)",
+        "INSERT INTO spikes (spike_id, lat, lng, spike_type) VALUES (?, ?, ?, ?)",
         (spike_id, lat, lng, spike_type)
     )
     conn.commit()

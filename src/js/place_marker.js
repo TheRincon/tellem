@@ -1,7 +1,7 @@
 function placeMarker(position, map) {
   var marker_uuid = uuidv4();
-  spike_type_ = SpikeType();
-  spike_color_ = set_spike_color(spike_type_)
+  var spike_type_ = SpikeType();
+  var spike_color_ = set_spike_color(spike_type_)
   var marker = new RichMarker({
     position: position,
     map: map,

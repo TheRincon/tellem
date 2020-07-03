@@ -29,23 +29,20 @@ const load_spikes = async () => {
     }
   })
   .then(function(response) {
-    return response.text();
-  }).then(function(data) {
-    console.log(data)
+    console.log(response);
+    return response.json();
   })
   .catch((error) => { console.error('Error:', error); });
-  // var data = await res
-  // console.log(data.body);
-  // return data;
+  return res
 }
 
 function parse_spike(spike) {
-  spike_json = JSON.stringify({
+  spike_json = {
     'spike_id': spike[1],
     'lat': spike[2],
     'lng': spike[3],
     'spike_type': spike[4]
-  })
+  }
 
   return spike_json
 }

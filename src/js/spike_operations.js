@@ -89,11 +89,17 @@ function set_spike_color(spike_type) {
       return '#000000'
     case 'end_spike':
       return '#660000'
+    case 'leg_spike':
+      return '#660000'
     case 'ticket_spike':
       return '#000000'
     default:
       // code block
   }
+}
+
+function setupMarker(marker_id) {
+  load_spike_media(marker_id);
 }
 
 function SpikeType() {

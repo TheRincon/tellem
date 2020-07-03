@@ -1,12 +1,12 @@
-function loadMarker(position, map) {
-  var marker_uuid = uuidv4();
-  spike_type_ = SpikeType();
-  spike_color_ = set_spike_color(spike_type_)
+function loadMarker(spike_id, lat, lng, spike_type, map) {
+  var spike_color = set_spike_color(spike_type)
+  var position = { lat: lat, lng: lng };
+  console.log(position);
   var marker = new RichMarker({
     position: position,
     map: map,
     optimized: false,
-    id: marker_uuid,
+    id: spike_id,
     clicked: false,
     shadow: false,
     media_types: [],
@@ -16,19 +16,19 @@ function loadMarker(position, map) {
     video_urls: [],
     notes_urls: [],
     music_urls: [],
-    spike_color: spike_color_,
-    spike_type: spike_type_,
+    spike_color: spike_color,
+    spike_type: spike_type,
     cursor: 'pointer',
     content: '<style>' +
-             `.${spike_type_} {` +
+             `.${spike_type} {` +
  	           'width: 0;' +
 	           'height: 0;' +
 	           'border-left: 10px solid transparent;' +
 	           'border-right: 10px solid transparent;' +
-	           `border-top: 20px solid ${spike_color_}; }` +
+	           `border-top: 20px solid ${spike_color}; }` +
              '</style>' +
-             `<div class="${spike_type_}"></div>` +
-             `<div id="exit-marker-${marker_uuid}">` +
+             `<div class="${spike_type}"></div>` +
+             `<div id="exit-marker-${spike_id}">` +
              '</div>'
   });
 
@@ -156,6 +156,6 @@ function loadMarker(position, map) {
       marker.clicked = true;
     }
   });
-  map.panTo(position);
-  return marker // [marker.id, marker.spike_type]
+  // map.panTo(position);
+  return marker
 }

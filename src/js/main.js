@@ -15,11 +15,14 @@ function init() {
     mapTypeId: google.maps.MapTypeId.ROADMAP
   });
 
-  spikes = load_spikes();
+  // (async () => {
+  //   var spikes = await load_spikes();
+  //   parsed_spikes = spikes.map(parse_spike);
+  //   parsed_spikes.forEach((spike, i) => {
+  //     x = loadMarker(spike['spike_id'], spike['lat'], spike['lng'], spike['spike_type'], map)
+  //   });
+  // })()
 
-  console.log(spikes);
-
-  // spikes.forEach(myFunction);
 
   google.maps.event.addListener(map, 'click', function(e) {
     var marker = placeMarker(e.latLng, map);
