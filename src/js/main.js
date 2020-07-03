@@ -7,7 +7,7 @@ markers = {}
 function init() {
   var map = new google.maps.Map(document.getElementById('map'), {
     disableDoubleClickZoom: true,
-    zoom: 8,
+    zoom: 6,
     center: {
       lat: 48.11111,
       lng: 15.11111
@@ -15,13 +15,13 @@ function init() {
     mapTypeId: google.maps.MapTypeId.ROADMAP
   });
 
-  // (async () => {
-  //   var spikes = await load_spikes();
-  //   parsed_spikes = spikes.map(parse_spike);
-  //   parsed_spikes.forEach((spike, i) => {
-  //     x = loadMarker(spike['spike_id'], spike['lat'], spike['lng'], spike['spike_type'], map)
-  //   });
-  // })()
+  (async () => {
+    var spikes = await load_spikes();
+    parsed_spikes = spikes.map(parse_spike);
+    parsed_spikes.forEach((spike, i) => {
+      x = loadMarker(spike['spike_id'], spike['lat'], spike['lng'], spike['spike_type'], map)
+    });
+  })()
 
 
   google.maps.event.addListener(map, 'click', function(e) {

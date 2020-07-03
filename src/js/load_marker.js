@@ -1,7 +1,8 @@
-function loadMarker(spike_id, lat, lng, spike_type, map) {
-  var spike_color = set_spike_color(spike_type)
-  var position = { lat: lat, lng: lng };
-  console.log(position);
+function loadMarker(spike_id, lati, longi, spike_type, map) {
+  var spike_color = set_spike_color(spike_type);
+  var new_lat = Number(parseFloat(lati).toFixed(5)); // ugly as sin
+  var new_lng = Number(parseFloat(longi).toFixed(5)); // ugly as sin
+  var position = new google.maps.LatLng(new_lat, new_lng);
   var marker = new RichMarker({
     position: position,
     map: map,
