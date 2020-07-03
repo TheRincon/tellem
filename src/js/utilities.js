@@ -29,7 +29,6 @@ const load_spikes = async () => {
     }
   })
   .then(function(response) {
-    console.log(response);
     return response.json();
   })
   .catch((error) => { console.error('Error:', error); });
@@ -47,21 +46,21 @@ function parse_spike(spike) {
   return spike_json
 }
 
-function load_spike_media(marker_id) {
-  let url = 'http://127.0.0.1:8080/spike';
-  fetch(url, {
+async function load_spike_media(marker_id) {
+  let url = `http://127.0.0.1:8080/load_spikes?spike_id=${marker_id}`;
+  const res = await fetch(url, {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json',
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Methods': 'GET, POST'
-    },
-    body: JSON.stringify({
-      'spike_id': `${marker_id}`
-    })
+    }
   })
-  .then(response => response.json())
+  .then(function(response) {
+    console.log(response);
+    return response.json();
+  })
   .catch((error) => { console.error('Error:', error); });
+  return res
 }
 
 function uuidv4() {

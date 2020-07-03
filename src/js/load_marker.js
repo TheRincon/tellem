@@ -2,6 +2,12 @@ function loadMarker(spike_id, lati, longi, spike_type, map) {
   var spike_color = set_spike_color(spike_type);
   var new_lat = Number(parseFloat(lati).toFixed(5)); // ugly as sin
   var new_lng = Number(parseFloat(longi).toFixed(5)); // ugly as sin
+  (async () => {
+    var spike_media = await load_spike_media(spike_id);
+    spike_media.forEach((med, i) => {
+      console.log(med);
+    });
+  })()
   var position = new google.maps.LatLng(new_lat, new_lng);
   var marker = new RichMarker({
     position: position,
