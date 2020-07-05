@@ -76,7 +76,7 @@ def load_spikes(conn):
 def load_spike_media(conn, spike_id):
     cursor = conn.cursor()
     cursor.execute(
-        '''SELECT file_path FROM media WHERE spike = ?;''', (spike_id, )
+        '''SELECT file_path FROM media WHERE spike_id = ?;''', (spike_id, )
     )
     data = cursor.fetchall()
 
@@ -125,10 +125,11 @@ def load_spike_from_db():
 
 @app.route('/load_spike_media', methods=['GET'])
 @cross_origin(supports_credentials=True)
-def load_spike_media():
+def load_spike_media_from_db():
     spike_id = request.args.get('spike_id')
     with sqlite3.connect("tellem.db") as con:
         spike_media = load_spike_media(con, spike_id)
+        print(spike_media)
     return spike_media
 
 

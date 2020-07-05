@@ -19,7 +19,7 @@ function init() {
     var spikes = await load_spikes();
     parsed_spikes = spikes.map(parse_spike);
     parsed_spikes.forEach((spike, i) => {
-      x = loadMarker(spike['spike_id'], spike['lat'], spike['lng'], spike['spike_type'], map)
+      loadMarker(spike['spike_id'], spike['lat'], spike['lng'], spike['spike_type'], map)
     });
   })()
 

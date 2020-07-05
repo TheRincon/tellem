@@ -2,12 +2,6 @@ function loadMarker(spike_id, lati, longi, spike_type, map) {
   var spike_color = set_spike_color(spike_type);
   var new_lat = Number(parseFloat(lati).toFixed(5)); // ugly as sin
   var new_lng = Number(parseFloat(longi).toFixed(5)); // ugly as sin
-  (async () => {
-    var spike_media = await load_spike_media(spike_id);
-    spike_media.forEach((med, i) => {
-      console.log(med);
-    });
-  })()
   var position = new google.maps.LatLng(new_lat, new_lng);
   var marker = new RichMarker({
     position: position,
@@ -38,6 +32,15 @@ function loadMarker(spike_id, lati, longi, spike_type, map) {
              `<div id="exit-marker-${spike_id}">` +
              '</div>'
   });
+
+  (async () => {
+    var spike_media = await load_spike_media(spike_id);
+    spike_media.forEach((medium, i) => {
+      add_selected_media(marker, medium[0]);
+    });
+  })()
+
+  console.log(marker.image_urls)
 
   markers[marker.id] = marker
 
@@ -135,26 +138,6 @@ function loadMarker(spike_id, lati, longi, spike_type, map) {
 
       function marker_width(len) {
         return len >= 5 ? '450' : ((len + 1) * 75).toString();
-      }
-
-      function pick_media_type(filename) {
-        return filename.split('.').pop();
-      }
-
-      function add_media_types(file) {
-        switch(pick_media_type(file)) {
-          case 'jpeg':
-            // code block
-            break;
-          case 'jpg':
-            // code block
-            break;
-          case 'png':
-            // code block
-            break;
-          default:
-            // code block
-        }
       }
 
       document.getElementById(`exit-marker-${marker.id}`).addEventListener("click", function(e) {

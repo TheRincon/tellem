@@ -66,6 +66,94 @@ function set_bubble(marker) {
   );
 }
 
+function file_extension(filename) {
+  return filename.split('.').pop().toLowerCase();
+}
+
+function classify_media(file) {
+  switch(file_extension(file)) {
+    case 'jpeg':
+      return 'image'
+    case 'tiff':
+      return 'image'
+    case 'jpg':
+      return 'image'
+    case 'png':
+      return 'image'
+    case 'mp4':
+      return 'video'
+    case 'avi':
+      return 'video'
+    case 'flv':
+      return 'video'
+    case 'mkv':
+      return 'video'
+    case 'webm':
+      return 'video'
+    case 'ogg':
+      return 'video'
+    case 'mov':
+      return 'video'
+    case 'ogv':
+      return 'video'
+    case 'vob':
+      return 'video'
+    case 'gif':
+      return 'video'
+    case 'gifv':
+      return 'video'
+    case 'pdf':
+      return 'pdf'
+    case 'mp3':
+      return 'music'
+    case 'wma':
+      return 'music'
+    case 'wav':
+      return 'music'
+    case 'aax':
+      return 'music'
+    case 'aax':
+      return 'music'
+    case 'oga':
+      return 'music'
+    case 'txt':
+      return 'notes'
+    case 'rtf':
+      return 'notes'
+    case 'doc':
+      return 'notes'
+    case 'docx':
+      return 'notes'
+    case 'rtf':
+      return 'notes'
+    case 'doc':
+      return 'notes'
+    default:
+      return 'unsupported'
+  }
+}
+
+function add_selected_media(marker, media) {
+  media_type = classify_media(media)
+  if (media_type === 'unsupported') {
+    // ignore for now
+  } else {
+    switch(media_type) {
+      case 'image':
+        console.log(marker.image_urls)
+        marker.image_urls.push(media)
+      case 'video':
+        marker.video_urls.push(media)
+      case 'pdf':
+        marker.pdf_urls.push(media)
+      case 'music':
+        marker.music_urls.push(media)
+      case 'notes':
+        marker.notes_urls.push(media)
+    }
+  }
+}
+
 function set_spike(marker) {
   marker.setContent('');
   marker.setContent('<style>' +
@@ -96,10 +184,6 @@ function set_spike_color(spike_type) {
     default:
       // code block
   }
-}
-
-function setupMarker(marker_id) {
-  load_spike_media(marker_id);
 }
 
 function SpikeType() {
