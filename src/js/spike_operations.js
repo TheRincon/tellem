@@ -1,4 +1,11 @@
-
+function loadFiles(marker) {
+  var media = load_by_media_type(marker);
+  let img = document.createElement('img')
+  for (x of media_array) {
+    img.src = x
+    document.getElementById(`gallery-${marker.id}`).appendChild(img)
+  }
+}
 
 function set_bubble(marker) {
   // https://css-tricks.com/the-shapes-of-css/
@@ -55,7 +62,8 @@ function set_bubble(marker) {
      '<form class="dz">' +
      '<input type="file" id="fileElem" multiple accept="image/*" onchange="handleFiles(this.files)">' +
      '</form>' +
-     `<div id="gallery-${marker.id}" class="gallery" /></div>` +
+     `<div id="gallery-${marker.id}" class="gallery" />` +
+     '</div>' +
      '<img src="img/new_blue.svg" alt="plus" width="70" height="70"> ' +
      '</form>' +
      '</div>' +
@@ -64,6 +72,27 @@ function set_bubble(marker) {
      `<img src="img/bb.png" width="30" height="30">` +
      '</div>'
   );
+  loadFiles(marker);
+}
+
+function marker_width(len) {
+  return len >= 5 ? '450' : ((len + 1) * 75).toString();
+}
+
+function load_by_media_type(marker) {
+  media_array = [];
+  var bubble = document.getElementById(`talkbubble-${marker.spike_type}-${marker.id}`)
+  for (t of [marker.image_urls, marker.video_urls, marker.notes_urls, marker.pdf_urls, marker.music_urls]) {
+    if (t && t.length) {
+      media_array.push(t[0]);
+      marker.media_length += 1;
+    }
+  }
+
+  gallery_width = marker_width(marker.media_length);
+  bubble.style.width = `${gallery_width}px`;
+
+  return media_array
 }
 
 function file_extension(filename) {
@@ -140,7 +169,6 @@ function add_selected_media(marker, media) {
   } else {
     switch(media_type) {
       case 'image':
-        console.log(marker.image_urls)
         marker.image_urls.push(media)
       case 'video':
         marker.video_urls.push(media)

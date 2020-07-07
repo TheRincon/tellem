@@ -40,8 +40,6 @@ function loadMarker(spike_id, lati, longi, spike_type, map) {
     });
   })()
 
-  console.log(marker.image_urls)
-
   markers[marker.id] = marker
 
   function delete_marker(marker) {
