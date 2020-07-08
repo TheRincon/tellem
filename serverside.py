@@ -136,15 +136,23 @@ def load_spike_media_from_db():
     spike_id = request.args.get('spike_id')
     with sqlite3.connect("tellem.db") as con:
         spike_media = load_spike_media(con, spike_id)
-        with zipfile.ZipFile('data.zip', mode='w') as z:
-            for i in spike_media:
-                z.write(i)
-        return send_file(
-            'data.zip',
-            mimetype='application/zip',
-            as_attachment=True,
-            attachment_filename='data.zip'
-        )
+        if spike_media:
+            with zipfile.ZipFile('data.zip', mode='w') as z:
+                for i in spike_media:
+                    z.write(i)
+            return send_file(
+                'data.zip',
+                mimetype='application/zip',
+                as_attachment=True,
+                attachment_filename='data.zip'
+            )
+        else:
+            return send_file(
+                'a342234234fsadfcvzxc.zip',
+                mimetype='application/zip',
+                as_attachment=True,
+                attachment_filename='dummy.zip'
+            )
 
 
 app.run(port=8080)

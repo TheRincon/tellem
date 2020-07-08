@@ -53,10 +53,17 @@ async function load_spike_media(marker_id) {
     headers: {
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Methods': 'GET, POST'
-    }
+    },
+    responseType: 'blob'
   })
-  .then(function(response) {
-    return response.json();
+  .then(response => response.blob())
+  .then(blob => {
+    var zipped = new JSZip();
+    zipped.loadAsync(blob)
+    .then(function (zip) {
+      console.log(zip.files);
+      return zip.files
+    });
   })
   .catch((error) => { console.error('Error:', error); });
   return res
