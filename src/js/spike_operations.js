@@ -1,8 +1,10 @@
 function loadFiles(marker) {
+  let reader = new FileReader()
   var media = load_by_media_type(marker);
   let img = document.createElement('img')
   for (x of media_array) {
-    img.src = x
+    reader.readAsDataURL(x)
+    img.src = reader.result
     document.getElementById(`gallery-${marker.id}`).appendChild(img)
   }
 }
@@ -85,11 +87,10 @@ function load_by_media_type(marker) {
   for (t of [marker.image_urls, marker.video_urls, marker.notes_urls, marker.pdf_urls, marker.music_urls]) {
     if (t && t.length) {
       media_array.push(t[0]);
-      marker.media_length += 1;
+      console.log(t[0]);
     }
   }
-
-  gallery_width = marker_width(marker.media_length);
+  gallery_width = marker_width(media_array.length);
   bubble.style.width = `${gallery_width}px`;
 
   return media_array
@@ -170,14 +171,19 @@ function add_selected_media(marker, media) {
     switch(media_type) {
       case 'image':
         marker.image_urls.push(media)
+        break;
       case 'video':
         marker.video_urls.push(media)
+        break;
       case 'pdf':
         marker.pdf_urls.push(media)
+        break;
       case 'music':
         marker.music_urls.push(media)
+        break;
       case 'notes':
         marker.notes_urls.push(media)
+        break;
     }
   }
 }
