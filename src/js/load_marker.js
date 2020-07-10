@@ -40,8 +40,6 @@ function loadMarker(spike_id, lati, longi, spike_type, map) {
     });
   })()
 
-  markers[marker.id] = marker
-
   function delete_marker(marker) {
     marker.setMap(null);
   }

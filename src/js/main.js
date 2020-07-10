@@ -1,9 +1,7 @@
 // look into this: https://github.com/atmist/snazzy-info-window
 
 var started = false
-var marker_list = {}
 var singleClick = false;
-markers = {}
 function init() {
   var map = new google.maps.Map(document.getElementById('map'), {
     disableDoubleClickZoom: true,
@@ -22,7 +20,6 @@ function init() {
       loadMarker(spike['spike_id'], spike['lat'], spike['lng'], spike['spike_type'], map)
     });
   })()
-
 
   google.maps.event.addListener(map, 'click', function(e) {
     var marker = placeMarker(e.latLng, map);

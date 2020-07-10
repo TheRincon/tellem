@@ -58,12 +58,21 @@ async function load_spike_media(marker_id) {
   })
   .then(response => response.blob())
   .then(blob => {
-    var zipped = new JSZip();
-    zipped.loadAsync(blob)
-    .then(function (zip) {
-      console.log(zip.files);
-      return zip.files
-    });
+    var media_array = [];
+    var reader = new FileReader();
+    var jsZip = new JSZip();
+    jsZip.loadAsync(blob).then(function (zip) {
+      Object.keys(zip.files).forEach(function (filename) {
+        zip.files[filename].async('arraybuffer').then(function (fileData) {
+          mime_type = classify_media(filename) + '/' + file_extension(filename);
+          new_blob = new Blob([fileData], {type: mime_type});
+          var file = new File([new_blob], filename, {lastModified: Date.now()});
+          media_array.push(file);
+        })
+      })
+    })
+    console.log(media_array);
+    return media_array
   })
   .catch((error) => { console.error('Error:', error); });
   return res

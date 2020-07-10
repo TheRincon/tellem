@@ -96,7 +96,11 @@ function load_by_media_type(marker) {
 }
 
 function file_extension(filename) {
-  return filename.split('.').pop().toLowerCase();
+  if (filename.split('.').pop().toLowerCase() == 'jpeg') {
+    return 'jpg'
+  } else { // hack for now
+    return filename.split('.').pop().toLowerCase();
+  }
 }
 
 function classify_media(file) {
@@ -132,31 +136,31 @@ function classify_media(file) {
     case 'gifv':
       return 'video'
     case 'pdf':
-      return 'pdf'
+      return 'application'
     case 'mp3':
-      return 'music'
+      return 'audio'
     case 'wma':
-      return 'music'
+      return 'audio'
     case 'wav':
-      return 'music'
+      return 'audio'
     case 'aax':
-      return 'music'
+      return 'audio'
     case 'aax':
-      return 'music'
+      return 'audio'
     case 'oga':
-      return 'music'
+      return 'audio'
     case 'txt':
-      return 'notes'
+      return 'text'
     case 'rtf':
-      return 'notes'
+      return 'text'
     case 'doc':
-      return 'notes'
+      return 'text'
     case 'docx':
-      return 'notes'
+      return 'text'
     case 'rtf':
-      return 'notes'
+      return 'text'
     case 'doc':
-      return 'notes'
+      return 'text'
     default:
       return 'unsupported'
   }
@@ -174,13 +178,13 @@ function add_selected_media(marker, media) {
       case 'video':
         marker.video_urls.push(media)
         break;
-      case 'pdf':
+      case 'application':
         marker.pdf_urls.push(media)
         break;
-      case 'music':
+      case 'audio':
         marker.music_urls.push(media)
         break;
-      case 'notes':
+      case 'text':
         marker.notes_urls.push(media)
         break;
     }
