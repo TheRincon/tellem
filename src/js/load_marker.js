@@ -34,9 +34,11 @@ function loadMarker(spike_id, lati, longi, spike_type, map) {
   });
 
   (async () => {
-    var spike_media = await load_spike_media(spike_id);
-    spike_media.forEach((medium, i) => {
-      add_selected_media(marker, medium[0]);
+    var spike_media = await load_spike_media_ids(spike_id);
+    spike_media.forEach(async (id) => {
+      var medium = await load_media_by_id(id, marker.id);
+      console.log(medium);
+      add_selected_media(marker, medium);
     });
   })()
 

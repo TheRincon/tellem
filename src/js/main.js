@@ -1,5 +1,6 @@
 // look into this: https://github.com/atmist/snazzy-info-window
 
+
 var started = false
 var singleClick = false;
 function init() {

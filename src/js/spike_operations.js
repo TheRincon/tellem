@@ -1,10 +1,8 @@
 function loadFiles(marker) {
-  let reader = new FileReader()
   var media = load_by_media_type(marker);
-  let img = document.createElement('img')
   for (x of media) {
-    reader.readAsDataURL(x)
-    img.src = reader.result
+    var img = new Image();
+    img.src = x;
     document.getElementById(`gallery-${marker.id}`).appendChild(img)
   }
 }
@@ -96,6 +94,7 @@ function load_by_media_type(marker) {
 }
 
 function file_extension(filename) {
+  console.log(filename)
   if (filename.split('.').pop().toLowerCase() == 'jpeg') {
     return 'jpg'
   } else { // hack for now
@@ -107,9 +106,9 @@ function classify_media(file) {
   switch(file_extension(file)) {
     case 'jpeg':
       return 'image'
-    case 'tiff':
-      return 'image'
     case 'jpg':
+      return 'image'
+    case 'tiff':
       return 'image'
     case 'png':
       return 'image'
@@ -167,28 +166,29 @@ function classify_media(file) {
 }
 
 function add_selected_media(marker, media) {
-  media_type = classify_media(media)
-  if (media_type === 'unsupported') {
-    // ignore for now
-  } else {
-    switch(media_type) {
-      case 'image':
-        marker.image_urls.push(media)
-        break;
-      case 'video':
-        marker.video_urls.push(media)
-        break;
-      case 'application':
-        marker.pdf_urls.push(media)
-        break;
-      case 'audio':
-        marker.music_urls.push(media)
-        break;
-      case 'text':
-        marker.notes_urls.push(media)
-        break;
-    }
-  }
+  // media_type = classify_media(media)
+  marker.image_urls.push(media)
+  // if (media_type === 'unsupported') {
+  //   // ignore for now
+  // } else {
+  //   switch(media_type) {
+  //     case 'image':
+  //       marker.image_urls.push(media)
+  //       break;
+  //     case 'video':
+  //       marker.video_urls.push(media)
+  //       break;
+  //     case 'application':
+  //       marker.pdf_urls.push(media)
+  //       break;
+  //     case 'audio':
+  //       marker.music_urls.push(media)
+  //       break;
+  //     case 'text':
+  //       marker.notes_urls.push(media)
+  //       break;
+  //   }
+  // }
 }
 
 function set_spike(marker) {

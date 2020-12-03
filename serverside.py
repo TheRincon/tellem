@@ -37,9 +37,6 @@ def sqlite_ops():
     else:
         print("Error! cannot create the database connection.")
 
-def insert(conn):
-    print('wow')
-
 def create_connection(db_file):
     conn = None
     try:
@@ -77,18 +74,38 @@ def load_spikes(conn):
 
     return json.dumps(data)
 
-def load_spike_media(conn, spike_id):
-    spike_media = []
+def send_media_id(conn, media_id):
     cursor = conn.cursor()
     cursor.execute(
-        '''SELECT file_path FROM media WHERE spike_id = ?;''', (spike_id, )
+        '''SELECT file_path FROM media WHERE spike_id = ?;''', (media_id)
+    )
+
+
+def load_spike_media_ids(conn, spike_id):
+    spike_media = []
+    cursor = conn.cursor()
+    rc = cursor.execute(
+        f'''SELECT id FROM media WHERE spike_id = '{spike_id}';'''
     )
     data = cursor.fetchall()
-
-    for index, i in enumerate(data):
-        spike_media.append(i[0])
-
+    spike_media = []
+    if len(data) > 0:
+        for index, i in enumerate(data):
+            spike_media.append(i[0])
     return spike_media
+
+def load_spike_media(conn, media_id, spike_id):
+    cursor = conn.cursor()
+    cursor.execute(
+        f'''SELECT file_path FROM media WHERE spike_id = '{spike_id}' AND id = '{media_id}';'''
+    )
+    media_filepath = cursor.fetchall()
+    print(media_filepath[0][0])
+    if len(media_filepath) != 1:
+        print('ERROR image query gone wrong')
+    else:
+        return media_filepath[0][0]
+
 
 def add_spike(conn, spike_id, lat, lng, spike_type):
     cursor = conn.cursor()
@@ -131,29 +148,48 @@ def load_spike_from_db():
         spike_array = load_spikes(con)
     return spike_array
 
-@app.route('/load_spike_media', methods=['GET'])
+@app.route('/load_spike_media_ids', methods=['GET'])
 @cross_origin(supports_credentials=True)
-def load_spike_media_from_db():
+def load_spike_media_ids_from_db():
     spike_id = request.args.get('spike_id')
     with sqlite3.connect("tellem.db") as con:
-        spike_media = load_spike_media(con, spike_id)
-        if spike_media:
-            with zipfile.ZipFile('data.zip', mode='w') as z:
-                for i in spike_media:
-                    z.write(i)
-            return send_file(
-                'data.zip',
-                mimetype='application/zip',
-                as_attachment=True,
-                attachment_filename='data.zip'
-            )
-        else:
-            return send_file(
-                'a342234234fsadfcvzxc.zip',
-                mimetype='application/zip',
-                as_attachment=True,
-                attachment_filename='dummy.zip'
-            )
+        spike_media = load_spike_media_ids(con, spike_id)
+        return json.dumps(spike_media)
+        # if spike_media:
+        #     with zipfile.ZipFile('data.zip', mode='w') as z:
+        #         for i in spike_media:
+        #             z.write(i)
+        #     return send_file(
+        #         'data.zip',
+        #         mimetype='application/zip',
+        #         as_attachment=True,
+        #         attachment_filename='data.zip'
+        #     )
+        # else:
+        #     empty_zip_data = b'PK\x05\x06\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00'
+        #
+        #     with open('empty.zip', 'wb') as zip:
+        #         zip.write(empty_zip_data)
+        #         return send_file(
+        #             'empty.zip',
+        #             mimetype='application/zip',
+        #             as_attachment=True,
+        #             attachment_filename='empty.zip'
+        #         )
 
+@app.route('/load_spike_media_by_id', methods=['GET'])
+@cross_origin(supports_credentials=True)
+def load_spike_media_by_id():
+    media_id = request.args.get('media_id')
+    spike_id = request.args.get('spike_id')
+    print(spike_id)
+    with sqlite3.connect("tellem.db") as con:
+        # resp = flask.make_response(open(media).read())
+        # resp.content_type = "image/*"
+        # return resp
+        media = load_spike_media(con, media_id, spike_id)
+        return send_file(media, mimetype='image/*', attachment_filename='sample.jpg')
 
 app.run(port=8080)
+
+conn.close()

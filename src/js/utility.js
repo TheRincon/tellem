@@ -46,9 +46,9 @@ function parse_spike(spike) {
   return spike_json
 }
 
-async function load_spike_media(marker_id) {
-  let url = `http://127.0.0.1:8080/load_spike_media?spike_id=${marker_id}`;
-  const res = await fetch(url, {
+function load_media_by_id(media_id, spike_id) {
+  let url = `http://127.0.0.1:8080/load_spike_media_by_id?media_id=${media_id}&spike_id=${spike_id}`;
+  const res = fetch(url, {
     method: 'GET',
     headers: {
       'Access-Control-Allow-Origin': '*',
@@ -56,24 +56,53 @@ async function load_spike_media(marker_id) {
     },
     responseType: 'blob'
   })
-  .then(response => response.blob())
-  .then(blob => {
-    var media_array = [];
-    var reader = new FileReader();
-    var jsZip = new JSZip();
-    jsZip.loadAsync(blob).then(function (zip) {
-      Object.keys(zip.files).forEach(function (filename) {
-        zip.files[filename].async('arraybuffer').then(function (fileData) {
-          mime_type = classify_media(filename) + '/' + file_extension(filename);
-          new_blob = new Blob([fileData], {type: mime_type});
-          var file = new File([new_blob], filename, {lastModified: Date.now()});
-          media_array.push(file);
-        })
-      })
-    })
-    console.log(media_array);
-    return media_array
+  .then(function(response) {
+    var x = response.blob();
+    return x
+  }).then(function(blob) {
+    var objectURL = URL.createObjectURL(blob);
+    return objectURL
   })
+  .catch((error) => { console.error('Error:', error); });
+
+  return res
+}
+
+async function load_spike_media_ids(marker_id) {
+  let url = `http://127.0.0.1:8080/load_spike_media_ids?spike_id=${marker_id}`;
+  const res = await fetch(url, {
+    method: 'GET',
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, POST'
+    },
+    responseType: 'json'
+  })
+  .then(response => response.json())
+  .then(json => {
+     let media_array = [];
+     json.forEach((item) => {
+       media_array.push(item);
+     });
+     return media_array
+  })
+  // .then(response => response.blob())
+  // .then(blob => {
+  //   let media_array = [];
+  //   var jsZip = new JSZip();
+  //   jsZip.loadAsync(blob).then(function (zip) {
+  //     Object.keys(zip.files).forEach(function (filename) {
+  //       zip.files[filename].async('arraybuffer').then(function (fileData) {
+  //         var mime_type = classify_media(filename) + '/' + file_extension(filename);
+  //         var new_blob = new Blob([fileData], {type: mime_type});
+  //         var new_filename = filename.split('/')[1]; // appended with folder name, take only file name
+  //         var file = new File([new_blob], new_filename, {lastModified: Date.now()});
+  //         media_array.push(file);
+  //       })
+  //     })
+  //   })
+  //   return media_array
+  // })
   .catch((error) => { console.error('Error:', error); });
   return res
 }
