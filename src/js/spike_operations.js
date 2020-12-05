@@ -1,9 +1,9 @@
+
 function loadFiles(marker) {
-  var media = load_by_media_type(marker);
-  for (x of media) {
+  for (medium of marker.display_array) {
     var img = new Image();
-    img.src = x;
-    document.getElementById(`gallery-${marker.id}`).appendChild(img)
+    img.src = URL.createObjectURL(medium);
+    document.getElementById(`gallery-${marker.id}`).appendChild(img);
   }
 }
 
@@ -46,7 +46,7 @@ function set_bubble(marker) {
      'margin-left: auto;' +
      'margin-right: auto; }' +
      `#drop-area-${marker.id}.highlight { border-color: purple; max-width: 450px; }` +
-     `#gallery-${marker.id} { max-height: 70px; max-width: 450px; }` +
+     `#gallery-${marker.id} { max-height: 75px; max-width: 450px; }` +
      `#exit-marker-${marker.id} {` +
      'float: left;' +
      'max-width: 40px;' +
@@ -75,35 +75,8 @@ function set_bubble(marker) {
   loadFiles(marker);
 }
 
-function marker_width(len) {
-  return len >= 5 ? '450' : ((len + 1) * 75).toString();
-}
-
-function load_by_media_type(marker) {
-  media_array = [];
-  var bubble = document.getElementById(`talkbubble-${marker.spike_type}-${marker.id}`)
-  for (t of [marker.image_urls, marker.video_urls, marker.notes_urls, marker.pdf_urls, marker.music_urls]) {
-    if (t && t.length) {
-      media_array.push(t[0]);
-    }
-  }
-  gallery_width = marker_width(media_array.length);
-  bubble.style.width = `${gallery_width}px`;
-
-  return media_array
-}
-
-function file_extension(filename) {
-  console.log(filename)
-  if (filename.split('.').pop().toLowerCase() == 'jpeg') {
-    return 'jpg'
-  } else { // hack for now
-    return filename.split('.').pop().toLowerCase();
-  }
-}
-
 function classify_media(file) {
-  switch(file_extension(file)) {
+  switch(file.name.split('.').pop().toLowerCase()) {
     case 'jpeg':
       return 'image'
     case 'jpg':
@@ -166,29 +139,32 @@ function classify_media(file) {
 }
 
 function add_selected_media(marker, media) {
-  // media_type = classify_media(media)
-  marker.image_urls.push(media)
-  // if (media_type === 'unsupported') {
-  //   // ignore for now
-  // } else {
-  //   switch(media_type) {
-  //     case 'image':
-  //       marker.image_urls.push(media)
-  //       break;
-  //     case 'video':
-  //       marker.video_urls.push(media)
-  //       break;
-  //     case 'application':
-  //       marker.pdf_urls.push(media)
-  //       break;
-  //     case 'audio':
-  //       marker.music_urls.push(media)
-  //       break;
-  //     case 'text':
-  //       marker.notes_urls.push(media)
-  //       break;
-  //   }
-  // }
+  media_type = classify_media(media);
+  var type_array = [];
+  switch(media_type) {
+    case 'image':
+      type_array = marker.image_urls;
+      break;
+    case 'video':
+      type_array = marker.video_urls;
+      break;
+    case 'application':
+      type_array = markers.pdf_urls;
+      break;
+    case 'audio':
+      type_array = marker.music_urls;
+      break;
+    case 'text':
+      type_array = marker.notes_urls;
+      break;
+    default:
+      console.log('Unsupported file type!');
+      break;
+  }
+  type_array.push(media);
+  if (type_array.length == 1) {
+    marker.display_array.push(type_array[0])
+  }
 }
 
 function set_spike(marker) {

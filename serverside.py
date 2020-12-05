@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request, send_file
+from flask import Flask, jsonify, request, make_response, send_file
 from flask_cors import CORS, cross_origin
 from werkzeug.utils import secure_filename
 import os
@@ -8,6 +8,7 @@ import json
 import zipfile
 import io
 import pathlib
+import magic
 
 app = Flask(__name__)
 CORS(app, support_credentials=True)
@@ -74,12 +75,6 @@ def load_spikes(conn):
 
     return json.dumps(data)
 
-def send_media_id(conn, media_id):
-    cursor = conn.cursor()
-    cursor.execute(
-        '''SELECT file_path FROM media WHERE spike_id = ?;''', (media_id)
-    )
-
 
 def load_spike_media_ids(conn, spike_id):
     spike_media = []
@@ -100,11 +95,13 @@ def load_spike_media(conn, media_id, spike_id):
         f'''SELECT file_path FROM media WHERE spike_id = '{spike_id}' AND id = '{media_id}';'''
     )
     media_filepath = cursor.fetchall()
-    print(media_filepath[0][0])
     if len(media_filepath) != 1:
         print('ERROR image query gone wrong')
     else:
-        return media_filepath[0][0]
+        mime_type = magic.from_file(media_filepath[0][0], mime=True)
+        print(mime_type)
+        print(media_filepath[0][0])
+        return media_filepath[0][0], mime_type
 
 
 def add_spike(conn, spike_id, lat, lng, spike_type):
@@ -182,13 +179,11 @@ def load_spike_media_ids_from_db():
 def load_spike_media_by_id():
     media_id = request.args.get('media_id')
     spike_id = request.args.get('spike_id')
-    print(spike_id)
     with sqlite3.connect("tellem.db") as con:
-        # resp = flask.make_response(open(media).read())
-        # resp.content_type = "image/*"
-        # return resp
-        media = load_spike_media(con, media_id, spike_id)
-        return send_file(media, mimetype='image/*', attachment_filename='sample.jpg')
+        media, mime_type = load_spike_media(con, media_id, spike_id)
+        response = make_response(send_file(media, as_attachment=True))
+        response.headers['filename'] = media
+        return response
 
 app.run(port=8080)
 

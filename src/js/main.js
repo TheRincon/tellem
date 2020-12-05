@@ -17,13 +17,20 @@ function init() {
   (async () => {
     var spikes = await load_spikes();
     parsed_spikes = spikes.map(parse_spike);
-    parsed_spikes.forEach((spike, i) => {
-      loadMarker(spike['spike_id'], spike['lat'], spike['lng'], spike['spike_type'], map)
+    parsed_spikes.forEach((spike) => {
+      placeMarker(
+        map,
+        position = false,
+        spike_id = spike['spike_id'],
+        lati = spike['lat'],
+        longi = spike['lng'],
+        spike_type = spike['spike_type']
+      )
     });
   })()
 
   google.maps.event.addListener(map, 'click', function(e) {
-    var marker = placeMarker(e.latLng, map);
+    var marker = placeMarker(map, position = e.latLng);
     send_spike_info(e.latLng.lat().toString(), e.latLng.lng().toString(), marker);
     if (started == true) {
       started = false;

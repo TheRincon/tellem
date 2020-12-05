@@ -1,15 +1,22 @@
-function uuidv4() {
-  return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
-    (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
-  );
-}
-
 markers = {};
 
-function placeMarker(position, map) {
-  var marker_uuid = uuidv4();
-  var spike_type_ = SpikeType();
-  var spike_color_ = set_spike_color(spike_type_)
+function placeMarker(
+  map,
+  position = false,
+  spike_id = false,
+  lati = false,
+  longi = false,
+  spike_type = false
+) {
+  var marker_uuid = (spike_id != false) ? spike_id : uuidv4();
+  var spike_type_ = (spike_type != false) ? spike_type : SpikeType();
+  var spike_color_ = set_spike_color(spike_type_);
+  if (position == false) {
+      var new_lat = Number(parseFloat(lati).toFixed(5)); // ugly as sin
+      var new_lng = Number(parseFloat(longi).toFixed(5)); // ugly as sin
+      position = new google.maps.LatLng(new_lat, new_lng);
+  }
+
   var marker = new RichMarker({
     position: position,
     map: map,
@@ -20,6 +27,7 @@ function placeMarker(position, map) {
     media_types: [],
     media_length: 0,
     pdf_urls: [],
+    display_array: [],
     image_urls: [],
     video_urls: [],
     notes_urls: [],
@@ -40,7 +48,15 @@ function placeMarker(position, map) {
              '</div>'
   });
 
-  markers[marker.id] = marker
+  (async () => {
+    var spike_media = await load_spike_media_ids(spike_id);
+    spike_media.forEach(async (id) => {
+      var medium = await load_media_by_id(id, marker.id);
+      var type_array = add_selected_media(marker, medium); // saved return value for later
+    });
+  })()
+
+  markers[marker.id] = marker;
 
   function delete_marker(marker) {
     marker.setMap(null);
@@ -52,6 +68,7 @@ function placeMarker(position, map) {
       marker.clicked = false;
     } else if (marker.clicked == false) {
       set_bubble(marker);
+      set_width(marker);
       // https://www.smashingmagazine.com/2018/01/drag-drop-file-uploader-vanilla-js/
       // https://codepen.io/joezimjs/pen/yPWQbd
       var dropArea = document.getElementById(`drop-area-${marker.id}`)
@@ -94,9 +111,15 @@ function placeMarker(position, map) {
         reader.readAsDataURL(file)
         if (marker.media_length < 5) {
           reader.onloadend = function() {
-            let img = document.createElement('img')
-            img.src = reader.result
-            document.getElementById(`gallery-${marker.id}`).appendChild(img)
+            var type_array = add_selected_media(reader.result);
+            type_array.push(reader.result);
+            if (type_array.length == 1) {
+              let img = document.createElement('img');
+              img.src = reader.result;
+              document.getElementById(`gallery-${marker.id}`).appendChild(img);
+            } else {
+              marker.display_array.push(reader.result);
+            }
           }
         }
       }
@@ -129,33 +152,11 @@ function placeMarker(position, map) {
 
       function set_width() {
         var bubble = document.getElementById(`talkbubble-${marker.spike_type}-${marker.id}`)
-        marker.media_length += 1;
-        gallery_width = marker_width(marker.media_length);
-        bubble.style.width = `${gallery_width}px`;
+        bubble.style.width = `${marker_width(marker.display_array.length)}px`;
       }
 
       function marker_width(len) {
         return len >= 5 ? '450' : ((len + 1) * 75).toString();
-      }
-
-      function pick_media_type(filename) {
-        return filename.split('.').pop();
-      }
-
-      function add_media_types(file) {
-        switch(pick_media_type(file)) {
-          case 'jpeg':
-            // code block
-            break;
-          case 'jpg':
-            // code block
-            break;
-          case 'png':
-            // code block
-            break;
-          default:
-            // code block
-        }
       }
 
       document.getElementById(`exit-marker-${marker.id}`).addEventListener("click", function(e) {
@@ -164,6 +165,6 @@ function placeMarker(position, map) {
       marker.clicked = true;
     }
   });
-  map.panTo(position);
+  // map.panTo(position);
   return marker // [marker.id, marker.spike_type]
 }

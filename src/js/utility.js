@@ -57,14 +57,12 @@ function load_media_by_id(media_id, spike_id) {
     responseType: 'blob'
   })
   .then(function(response) {
-    var x = response.blob();
-    return x
-  }).then(function(blob) {
-    var objectURL = URL.createObjectURL(blob);
-    return objectURL
+    var ft = response.headers.get('Content-Type');
+    var file_type = ft.split('/').pop();
+    var media_file = new File([response.blob()], uuidv4() + '.' + file_type);
+    return media_file
   })
   .catch((error) => { console.error('Error:', error); });
-
   return res
 }
 
