@@ -96,11 +96,9 @@ def load_spike_media(conn, media_id, spike_id):
     )
     media_filepath = cursor.fetchall()
     if len(media_filepath) != 1:
-        print('ERROR image query gone wrong')
+        print('ERROR media query gone wrong')
     else:
         mime_type = magic.from_file(media_filepath[0][0], mime=True)
-        print(mime_type)
-        print(media_filepath[0][0])
         return media_filepath[0][0], mime_type
 
 
@@ -115,7 +113,7 @@ def add_spike(conn, spike_id, lat, lng, spike_type):
 
 @app.route('/media', methods=['POST'])
 @cross_origin(supports_credentials=True)
-def handle_image():
+def handle_media():
     file = request.files['file']
     spike_id = request.headers['spike_id']
     if not os.path.exists('media'):
@@ -181,8 +179,8 @@ def load_spike_media_by_id():
     spike_id = request.args.get('spike_id')
     with sqlite3.connect("tellem.db") as con:
         media, mime_type = load_spike_media(con, media_id, spike_id)
-        response = make_response(send_file(media, as_attachment=True))
-        response.headers['filename'] = media
+        response = make_response(send_file(media))
+        # return send_file(media, mimetype=mime_type)
         return response
 
 app.run(port=8080)

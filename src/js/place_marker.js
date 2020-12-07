@@ -24,14 +24,12 @@ function placeMarker(
     id: marker_uuid,
     clicked: false,
     shadow: false,
-    media_types: [],
-    media_length: 0,
-    pdf_urls: [],
     display_array: [],
     image_urls: [],
     video_urls: [],
     notes_urls: [],
     music_urls: [],
+    application_urls: [],
     spike_color: spike_color_,
     spike_type: spike_type_,
     cursor: 'pointer',
@@ -49,10 +47,11 @@ function placeMarker(
   });
 
   (async () => {
-    var spike_media = await load_spike_media_ids(spike_id);
-    spike_media.forEach(async (id) => {
+    var spike_ids = await load_spike_media_ids(spike_id);
+    spike_ids.forEach(async (id) => {
       var medium = await load_media_by_id(id, marker.id);
-      var type_array = add_selected_media(marker, medium); // saved return value for later
+      console.log(medium);
+      var typed_array = add_selected_media(marker, medium); // saved return value for later
     });
   })()
 
@@ -107,20 +106,20 @@ function placeMarker(
       }
 
       function previewFile(file) {
-        let reader = new FileReader()
-        reader.readAsDataURL(file)
-        if (marker.media_length < 5) {
-          reader.onloadend = function() {
-            var type_array = add_selected_media(reader.result);
-            type_array.push(reader.result);
-            if (type_array.length == 1) {
-              let img = document.createElement('img');
-              img.src = reader.result;
-              document.getElementById(`gallery-${marker.id}`).appendChild(img);
-            } else {
-              marker.display_array.push(reader.result);
-            }
+        // let reader = new FileReader()
+        // reader.readAsBinaryString(file;)
+        if (marker.display_array.length < 5) {
+        // reader.onloadend = function() {
+          // console.log(reader.result);
+          var type_array = add_selected_media(file);
+          type_array.push(file);
+          if (type_array.length == 1) {
+            marker.display_array.push(file);
+            let img = document.createElement('img');
+            img.src = reader.result;
+            document.getElementById(`gallery-${marker.id}`).appendChild(img);
           }
+        // }
         }
       }
 

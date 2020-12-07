@@ -52,18 +52,25 @@ function load_media_by_id(media_id, spike_id) {
     method: 'GET',
     headers: {
       'Access-Control-Allow-Origin': '*',
+      'Access-Control-Expose-Headers': 'Content-Length',
       'Access-Control-Allow-Methods': 'GET, POST'
     },
     responseType: 'blob'
   })
-  .then(function(response) {
-    var ft = response.headers.get('Content-Type');
-    var file_type = ft.split('/').pop();
-    var media_file = new File([response.blob()], uuidv4() + '.' + file_type);
-    return media_file
+  .then(response => {
+    return response.blob().then(blob => {
+        var file = fileHandler(response.headers.get("Content-Type"), blob);
+        return file
+    })
   })
   .catch((error) => { console.error('Error:', error); });
   return res
+}
+
+function fileHandler(content_type, blob) {
+  var file_type = content_type.split('/').pop();
+  var media_file = new File([blob], uuidv4() + '.' + file_type);
+  return media_file
 }
 
 async function load_spike_media_ids(marker_id) {
@@ -72,6 +79,7 @@ async function load_spike_media_ids(marker_id) {
     method: 'GET',
     headers: {
       'Access-Control-Allow-Origin': '*',
+      'Access-Control-Expose-Headers': 'Content-Length',
       'Access-Control-Allow-Methods': 'GET, POST'
     },
     responseType: 'json'
@@ -84,23 +92,6 @@ async function load_spike_media_ids(marker_id) {
      });
      return media_array
   })
-  // .then(response => response.blob())
-  // .then(blob => {
-  //   let media_array = [];
-  //   var jsZip = new JSZip();
-  //   jsZip.loadAsync(blob).then(function (zip) {
-  //     Object.keys(zip.files).forEach(function (filename) {
-  //       zip.files[filename].async('arraybuffer').then(function (fileData) {
-  //         var mime_type = classify_media(filename) + '/' + file_extension(filename);
-  //         var new_blob = new Blob([fileData], {type: mime_type});
-  //         var new_filename = filename.split('/')[1]; // appended with folder name, take only file name
-  //         var file = new File([new_blob], new_filename, {lastModified: Date.now()});
-  //         media_array.push(file);
-  //       })
-  //     })
-  //   })
-  //   return media_array
-  // })
   .catch((error) => { console.error('Error:', error); });
   return res
 }

@@ -129,10 +129,6 @@ function classify_media(file) {
       return 'text'
     case 'docx':
       return 'text'
-    case 'rtf':
-      return 'text'
-    case 'doc':
-      return 'text'
     default:
       return 'unsupported'
   }
@@ -149,7 +145,7 @@ function add_selected_media(marker, media) {
       type_array = marker.video_urls;
       break;
     case 'application':
-      type_array = markers.pdf_urls;
+      type_array = markers.application_urls;
       break;
     case 'audio':
       type_array = marker.music_urls;
@@ -161,6 +157,7 @@ function add_selected_media(marker, media) {
       console.log('Unsupported file type!');
       break;
   }
+  console.log(type_array);
   type_array.push(media);
   if (type_array.length == 1) {
     marker.display_array.push(type_array[0])
