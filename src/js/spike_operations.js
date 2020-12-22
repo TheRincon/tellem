@@ -60,7 +60,7 @@ function set_bubble(marker) {
      `<div id="talkbubble-${marker.spike_type}-${marker.id}">` +
      `<div id="drop-area-${marker.id}">` +
      '<form class="dz">' +
-     '<input type="file" id="fileElem" multiple accept="image/*" onchange="handleFiles(this.files)">' +
+     '<input type="file" id="fileElem" multiple accept="image/*,video/*,audio/*,.pdf" onchange="handleFiles(this.files)">' +
      '</form>' +
      `<div id="gallery-${marker.id}" class="gallery" />` +
      '</div>' +
@@ -145,7 +145,7 @@ function add_selected_media(marker, media) {
       type_array = marker.video_urls;
       break;
     case 'application':
-      type_array = markers.application_urls;
+      type_array = marker.application_urls;
       break;
     case 'audio':
       type_array = marker.music_urls;
@@ -154,10 +154,8 @@ function add_selected_media(marker, media) {
       type_array = marker.notes_urls;
       break;
     default:
-      console.log('Unsupported file type!');
       break;
   }
-  console.log(type_array);
   type_array.push(media);
   if (type_array.length == 1) {
     marker.display_array.push(type_array[0])
