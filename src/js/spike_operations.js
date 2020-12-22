@@ -1,10 +1,14 @@
-
-function loadFiles(marker) {
-  for (medium of marker.display_array) {
-    var img = new Image();
-    img.src = URL.createObjectURL(medium);
-    document.getElementById(`gallery-${marker.id}`).appendChild(img);
-  }
+function updateDisplay(marker) {
+  document.getElementById(`gallery-${marker.id}`).innerHTML = "";
+  marker.display_array.forEach(file => {
+    let reader = new FileReader()
+    reader.readAsDataURL(file)
+    reader.onloadend = function() {
+      let img = document.createElement('img');
+      img.src = reader.result;
+      document.getElementById(`gallery-${marker.id}`).appendChild(img);
+    }
+  });
 }
 
 function set_bubble(marker) {
@@ -46,6 +50,7 @@ function set_bubble(marker) {
      'margin-left: auto;' +
      'margin-right: auto; }' +
      `#drop-area-${marker.id}.highlight { border-color: purple; max-width: 450px; }` +
+     `#drop-area-${marker.id}.opened { border-color: green; max-width: 450px; }` +
      `#gallery-${marker.id} { max-height: 75px; max-width: 450px; }` +
      `#exit-marker-${marker.id} {` +
      'float: left;' +
@@ -72,7 +77,18 @@ function set_bubble(marker) {
      `<img src="img/bb.png" width="30" height="30">` +
      '</div>'
   );
-  loadFiles(marker);
+
+  updateDisplay(marker);
+  document.getElementById(`drop-area-${marker.id}`).classList.add('opened')
+
+  function set_width() {
+    var bubble = document.getElementById(`talkbubble-${marker.spike_type}-${marker.id}`)
+    bubble.style.width = `${marker_width(marker.display_array.length)}px`;
+  }
+
+  function marker_width(len) {
+    return len >= 5 ? '450' : ((len + 1) * 75).toString();
+  }
 }
 
 function classify_media(file) {

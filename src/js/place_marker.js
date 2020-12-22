@@ -66,7 +66,8 @@ function placeMarker(
       marker.clicked = false;
     } else if (marker.clicked == false) {
       set_bubble(marker);
-      set_width(marker);
+      set_width();
+      // updateDisplay(marker);
       // https://www.smashingmagazine.com/2018/01/drag-drop-file-uploader-vanilla-js/
       // https://codepen.io/joezimjs/pen/yPWQbd
       var dropArea = document.getElementById(`drop-area-${marker.id}`)
@@ -104,29 +105,9 @@ function placeMarker(
         handleFiles(files)
       }
 
-      function dataURLtoBlob(dataurl) {
-          var arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
-              bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
-          while(n--){
-              u8arr[n] = bstr.charCodeAt(n);
-          }
-          return new Blob([u8arr], {type:mime});
-      }
-
       function addFile(file) {
-        let reader = new FileReader()
-        reader.readAsDataURL(file)
-        if (marker.media_length < 5) {
-          reader.onloadend = function() {
-            let img = document.createElement('img')
-            img.src = reader.result
-            document.getElementById(`gallery-${marker.id}`).appendChild(img);
-          }
-        }
-      }
-
-      function updateDisplay(marker) {
-        
+        add_selected_media(marker, file);
+        updateDisplay(marker);
       }
 
       function handleFiles(files) {
