@@ -1,14 +1,55 @@
 function updateDisplay(marker) {
   document.getElementById(`gallery-${marker.id}`).innerHTML = "";
   marker.display_array.forEach(file => {
-    let reader = new FileReader()
-    reader.readAsDataURL(file)
-    reader.onloadend = function() {
-      let img = document.createElement('img');
-      img.src = reader.result;
-      document.getElementById(`gallery-${marker.id}`).appendChild(img);
-    }
+    handleMedia(file, marker);
   });
+}
+
+function handleMedia(file, marker) {
+  let media_type = classify_media(file);
+  switch(media_type) {
+    case 'image':
+      setupImage(file, marker);
+      break;
+    case 'video':
+      setupVideo(file, marker);
+      break;
+    case 'video':
+      setupApplication(file, marker);
+      break;
+  }
+}
+
+function setupImage(file, marker) {
+  let reader = new FileReader()
+  reader.readAsDataURL(file)
+  reader.onloadend = function() {
+    let img = document.createElement('img');
+    img.src = reader.result;
+    document.getElementById(`gallery-${marker.id}`).appendChild(img);
+  }
+}
+
+function setupVideo(file, marker) {
+  let ext = file.name.split('.').pop().toLowerCase();
+  let ihtml = `<video width="70" height="70"><source src="${file.name}#t=0.1" type="video/${ext}" /></video>`
+  console.log(ext)
+  document.getElementById(`gallery-${marker.id}`).insertAdjacentHTML('afterbegin', ihtml);
+}
+
+function setupApplication(file, marker) {
+  let ext = file.name.split('.').pop().toLowerCase();
+  let reader = new FileReader()
+  reader.readAsDataURL(file)
+  reader.onloadend = function() {
+    console.log(`application/${ext}`);
+    let emb = document.createElement('embed');
+    emb.src = reader.result;
+    emb.setAttribute('height', 70);
+    emb.setAttribute('width', 70);
+    emb.setAttribute('type', `application/${ext}`);
+    document.getElementById(`gallery-${marker.id}`).appendChild(emb);
+  }
 }
 
 function set_bubble(marker) {
@@ -69,7 +110,7 @@ function set_bubble(marker) {
      '</form>' +
      `<div id="gallery-${marker.id}" class="gallery" />` +
      '</div>' +
-     '<img src="img/new_blue.svg" alt="plus" width="70" height="70"> ' +
+     '<img src="img/new_blue.svg" alt="plus" width="70" height="70" id=""> ' +
      '</form>' +
      '</div>' +
      `<div id="hid-${marker.id}" style="display: none;"></div>` +
@@ -80,15 +121,6 @@ function set_bubble(marker) {
 
   updateDisplay(marker);
   document.getElementById(`drop-area-${marker.id}`).classList.add('opened')
-
-  function set_width() {
-    var bubble = document.getElementById(`talkbubble-${marker.spike_type}-${marker.id}`)
-    bubble.style.width = `${marker_width(marker.display_array.length)}px`;
-  }
-
-  function marker_width(len) {
-    return len >= 5 ? '450' : ((len + 1) * 75).toString();
-  }
 }
 
 function classify_media(file) {
