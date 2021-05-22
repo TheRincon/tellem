@@ -14,7 +14,7 @@ function handleMedia(file, marker) {
     case 'video':
       setupVideo(file, marker);
       break;
-    case 'video':
+    case 'application':
       setupApplication(file, marker);
       break;
   }
