@@ -1,3 +1,60 @@
+.talkbubble {
+  display: flex;
+  min-width: 80px;
+  height: 80px;
+  background: #ffffff;
+  z-index: 999;
+  position: relative;
+  bottom: 15px;
+  border: thick solid var(--spike-color);
+  border-radius: 10px;
+}
+
+.talkbubble:before {
+  content: "";
+  position: absolute;
+  top: 100%;
+  right: 38%;
+  width: 0;
+  height: 0;
+  -moz-box-shadow: none;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-top: 20px solid var(--spike-color);
+}
+
+.talkbubble .dz {
+  display: inline-block;
+}
+
+.drop-area {
+  display: flex;
+  background: white;
+  border-radius: 5px;
+  border: 2px dashed rgb(0, 135, 247);
+  border-image: none;
+  max-width: 70px;
+  max-height: 70px;
+  margin-top: 3px;
+  margin-bottom: 5px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.drop-area.highlight { border-color: purple; max-width: 450px; }
+.drop-area.opened { border-color: green; max-width: 450px; }
+
+.drop-area .add-btn-wrapper {
+  cursor: pointer;
+  display: inline-block;
+}
+
+.drop-area .add-btn-wrapper input[type=file] {
+  display: none;
+}
+
+.gallery { max-height: 75px; max-width: 450px; }
 .gallery img {
   width: 70px;
   height: 70px;
@@ -6,3 +63,15 @@
   vertical-align: middle;
   float: left;
 }
+
+.exit-marker {
+  float: left;
+  max-width: 40px;
+  max-height: 40px;
+  box-shadow: none;
+  position: absolute;
+  top: -15px;
+  right: -15px;
+}
+
+.fileElem { display: none; }

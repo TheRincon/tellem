@@ -52,75 +52,30 @@ function setupApplication(file, marker) {
   }
 }
 
-function set_bubble(marker) {
+function set_bubble(marker, handleFiles) {
+  const fileUploadId = `file-upload-${marker.id}`
   // https://css-tricks.com/the-shapes-of-css/
-  marker.setContent('<style>' +
-     `#talkbubble-${marker.spike_type}-${marker.id} {` +
-     'width: 80px;' +
-     'height: 80px;' +
-     'background: #ffffff;' +
-     'z-index: 999;' +
-     'position: relative;' +
-     'bottom: 15px;' +
-     '-moz-border-radius: 5px;' +
-     '-webkit-border-radius: 5px;' +
-     `border: thick solid ${marker.spike_color};` +
-     'border-radius: 10px;}' +
-     `#talkbubble-${marker.spike_type}-${marker.id}:before {` +
-     'content: "";' +
-     'position: absolute;' +
-     'top: 100%;' +
-     'right: 38%;' +
-     'width: 0;' +
-     'height: 0;' +
-     '-moz-box-shadow: none;' +
-     '-webkit-box-shadow: none;' +
-     'box-shadow: none;' +
-     'border-left: 10px solid transparent;' +
-     'border-right: 10px solid transparent;' +
-     `border-top: 20px solid ${marker.spike_color}; }` +
-     `#drop-area-${marker.id} {` +
-     'background: white;' +
-     'border-radius: 5px;' +
-     'border: 2px dashed rgb(0, 135, 247);' +
-     'border-image: none;' +
-     'max-width: 70px;' +
-     'max-height: 70px;' +
-     'margin-top: 3px;' +
-     'margin-bottom: 5px;' +
-     'margin-left: auto;' +
-     'margin-right: auto; }' +
-     `#drop-area-${marker.id}.highlight { border-color: purple; max-width: 450px; }` +
-     `#drop-area-${marker.id}.opened { border-color: green; max-width: 450px; }` +
-     `#gallery-${marker.id} { max-height: 75px; max-width: 450px; }` +
-     `#exit-marker-${marker.id} {` +
-     'float: left;' +
-     'max-width: 40px;' +
-     'max-height: 40px;' +
-     'shadow: none;' +
-     'position: absolute;' +
-     'top: -15px;' +
-     'right: -15px; }' +
-     '#fileElem { display: none; }' +
-     '</style>' +
-     `<div id="talkbubble-${marker.spike_type}-${marker.id}">` +
-     `<div id="drop-area-${marker.id}">` +
-     '<form class="dz">' +
-     '<input type="file" id="fileElem" multiple accept="image/*,video/*,audio/*,.pdf" onchange="handleFiles(this.files)">' +
-     '</form>' +
-     `<div id="gallery-${marker.id}" class="gallery" />` +
-     '</div>' +
-     '<img src="img/new_blue.svg" alt="plus" width="70" height="70" id=""> ' +
-     '</form>' +
-     '</div>' +
-     `<div id="hid-${marker.id}" style="display: none;"></div>` +
-     `<div id="exit-marker-${marker.id}">` +
-     `<img src="img/bb.png" width="30" height="30">` +
-     '</div>'
+  marker.setContent(`
+    <div id="talkbubble-${marker.spike_type}-${marker.id}" class="talkbubble">
+      <div id="drop-area-${marker.id}" class="drop-area">
+        <div id="gallery-${marker.id}" class="gallery"></div>
+        <form class="dz">
+          <label for="${fileUploadId}" class="add-btn-wrapper">
+            <img src="img/new_blue.svg" alt="plus" width="70" height="70">
+            <input type="file" id="${fileUploadId}" class="file-input" multiple accept="image/*,video/*,audio/*,.pdf">
+          </label>
+        </form>
+        
+      </div>
+      <div id="hid-${marker.id}" class="hid" style="display: none;"></div>
+      <div id="exit-marker-${marker.id}" class="exit-marker">
+      <img src="img/bb.png" width="30" height="30">
+    </div>`
   );
 
   updateDisplay(marker);
-  document.getElementById(`drop-area-${marker.id}`).classList.add('opened')
+  document.getElementById(fileUploadId).addEventListener("change", e => { handleFiles(e.target.files) });
+  document.getElementById(`drop-area-${marker.id}`).classList.add('opened');
 }
 
 function classify_media(file) {
