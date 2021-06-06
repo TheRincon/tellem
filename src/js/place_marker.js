@@ -111,7 +111,7 @@ function placeMarker(
 
       function addFile(file) {
         add_selected_media(marker, file);
-        updateDisplay(marker);
+        marker.tiles.forEach(tile => tile.renderInto(document.getElementById(`gallery-${marker.id}`)));
       }
 
       function handleFiles(files) {
