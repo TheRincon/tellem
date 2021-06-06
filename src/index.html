@@ -12,11 +12,30 @@
   <!-- Place favicon.ico in the root directory -->
   <link rel="stylesheet" href="css/main.css">
   <link rel="stylesheet" href="css/dz.css">
+  <link rel="stylesheet" href="css/modal.css">
   <meta name="theme-color" content="#fafafa">
 </head>
 
 <body>
-  <div id='map'></div>
+  <main class="main_content">
+    <section id="map"></section>
+
+    <aside class="sidebar">
+    </aside>
+
+    <section class="modal_container" id="modal_container">
+      <article class="modal" id="modal">
+        <header id="modal_header" class="modal_header">
+          <h3 id="header_content">Header</h3>
+          <button class="close" id="modal_close">&times;</button>
+        </header>  
+        <p id="modal_content">
+          Content
+        </p>
+      </article>
+    </section>
+  </main>
+
   <script src="js/richmarker.js" type="module"></script>
   <script src="http://maps.googleapis.com/maps/api/js?&v=3"></script>
   <script src="js/main.js"></script>
@@ -25,7 +44,7 @@
   <script src="js/controls.js"></script>
   <script src="js/plugins.js"></script>
   <script src="js/spike_operations.js"></script>
-  <script src="js/jszip.min.js"></script>
+  <script src="js/jszip.min.js"></script>  
 </body>
 
 </html>
