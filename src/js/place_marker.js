@@ -33,17 +33,22 @@ function placeMarker(
     spike_color: spike_color_,
     spike_type: spike_type_,
     cursor: 'pointer',
-    content: '<style>' +
-             `.${spike_type_} {` +
- 	           'width: 0;' +
-	           'height: 0;' +
-	           'border-left: 10px solid transparent;' +
-	           'border-right: 10px solid transparent;' +
-	           `border-top: 20px solid ${spike_color_}; }` +
-             '</style>' +
-             `<div class="${spike_type_}"></div>` +
-             `<div id="exit-marker-${marker_uuid}">` +
-             '</div>'
+    content: `
+      <style>
+        :root {
+          --spike-color: ${spike_color_};
+        }
+    
+        .${spike_type_} {
+          width: 0;
+          height: 0;
+          border-left: 10px solid transparent;
+          border-right: 10px solid transparent;
+          border-top: 20px solid ${spike_color_};
+        }
+      </style>
+      <div class="${spike_type_}"></div>
+    <div id="exit-marker-${marker_uuid}"></div>`
   });
 
   (async () => {
@@ -65,8 +70,8 @@ function placeMarker(
     if ((marker.clicked == true) && (document.getElementById(`hid-${marker.id}`) == null)) {
       marker.clicked = false;
     } else if (marker.clicked == false) {
-      set_bubble(marker);
-      set_width();
+      set_bubble(marker, handleFiles);
+      
       // updateDisplay(marker);
       // https://www.smashingmagazine.com/2018/01/drag-drop-file-uploader-vanilla-js/
       // https://codepen.io/joezimjs/pen/yPWQbd
@@ -96,7 +101,6 @@ function placeMarker(
 
       // Handle dropped files
       dropArea.addEventListener('drop', handleDrop, false)
-      dropArea.addEventListener('drop', set_width)
 
       function handleDrop(e) {
         var dt = e.dataTransfer
@@ -107,7 +111,7 @@ function placeMarker(
 
       function addFile(file) {
         add_selected_media(marker, file);
-        updateDisplay(marker);
+        marker.tiles.forEach(tile => tile.renderInto(document.getElementById(`gallery-${marker.id}`)));
       }
 
       function handleFiles(files) {
@@ -134,15 +138,6 @@ function placeMarker(
         })
         .then(response => response.json())
         .catch((error) => { console.error('Error:', error); });
-      }
-
-      function set_width() {
-        var bubble = document.getElementById(`talkbubble-${marker.spike_type}-${marker.id}`)
-        bubble.style.width = `${marker_width(marker.display_array.length)}px`;
-      }
-
-      function marker_width(len) {
-        return len >= 5 ? '450' : ((len + 1) * 75).toString();
       }
 
       document.getElementById(`exit-marker-${marker.id}`).addEventListener("click", function(e) {

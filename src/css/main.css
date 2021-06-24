@@ -6,9 +6,20 @@ body {
   padding: 0;
 }
 
-#map {
+.main_content {
+  display: flex;
+  flex-shrink: 0;
+  height: 100vh;
+  width: 100%;
+}
+
+.main_content #map {
   height: 100%;
   width: 80%;
+}
+
+.main_content .sidebar {
+  flex: auto 1 1;
 }
 
 table td+td {
