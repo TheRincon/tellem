@@ -69,7 +69,7 @@ function load_media_by_id(media_id, spike_id) {
 
 function fileHandler(content_type, blob) {
   var file_type = content_type.split('/').pop();
-  var media_file = new File([blob], uuidv4() + '.' + file_type);
+  var media_file = new File([blob], uuidv4() + '.' + file_type, { type: content_type });
   return media_file
 }
 
